@@ -94,6 +94,9 @@
     .backing-plate {
       transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .profile-backing {
+      background: linear-gradient(135deg, #3e548c 0%, #3e548c 68%, #d8bd68 68%, #d8bd68 100%);
+    }
 
     /* 大頭像點擊回彈動畫 */
     .avatar-bounce {
@@ -219,12 +222,12 @@
           // CONNECT
         </div>
         <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"
+          <a href="https://www.instagram.com/kmos_wakuseipinboru/" target="_blank" rel="noopener noreferrer"
              class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
             <i class="fa-brands fa-instagram w-5 text-center text-lg"></i>
             <span>Instagram</span>
           </a>
-          <a href="https://x.com/kinmokuse967" target="_blank" rel="noopener noreferrer"
+          <a href="https://x.com/kinmokusei967" target="_blank" rel="noopener noreferrer"
              class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
             <i class="fa-brands fa-x-twitter w-5 text-center text-lg"></i>
             <span>X</span>
@@ -255,7 +258,7 @@
     
     <!-- 右上偏移背板 (圖1為藍灰色 #3e548c，圖2~7自動切換為金黃色 #d8bd68) -->
     <div id="backingPlate" 
-         class="backing-plate absolute -top-4 sm:-top-7 left-5 sm:left-8 -right-3 sm:-right-7 bottom-4 sm:bottom-7 bg-ef-slateBack z-0 pointer-events-none shadow-md">
+         class="backing-plate profile-backing absolute -top-4 sm:-top-7 left-5 sm:left-8 -right-3 sm:-right-7 bottom-4 sm:bottom-7 z-0 pointer-events-none shadow-md">
       <!-- 終末地工業邊角刻度裝飾 -->
       <div class="absolute top-2 right-3 text-[10px] font-mono text-black/30 tracking-widest uppercase">
         // KMOS.TERMINAL.STAGE
@@ -525,8 +528,8 @@
     const CONFIG = {
       pixivUserId: '58370556',
       pixivProfileUrl: 'https://www.pixiv.net/users/58370556',
-      xUrl: 'https://x.com/kinmokuse967',
-      instagramUrl: 'https://www.instagram.com/',
+      xUrl: 'https://x.com/kinmokusei967',
+      instagramUrl: 'https://www.instagram.com/kmos_wakuseipinboru/',
       fanboxUrl: 'https://kmos.fanbox.cc/',
       patreonUrl: 'https://www.patreon.com/c/KMOS70967?vanity=user',
       fanskyUrl: 'https://www.fansky.net/KmOS/posts',
@@ -684,8 +687,10 @@
         // 切換右上角背板顏色：個人資料用藍灰 (#3e548c)，其餘用金黃 (#d8bd68)
         if (tabKey === 'profile') {
           backingPlate.classList.remove('bg-ef-goldBack');
-          backingPlate.classList.add('bg-ef-slateBack');
+          backingPlate.classList.remove('bg-ef-slateBack');
+          backingPlate.classList.add('profile-backing');
         } else {
+          backingPlate.classList.remove('profile-backing');
           backingPlate.classList.remove('bg-ef-slateBack');
           backingPlate.classList.add('bg-ef-goldBack');
         }
