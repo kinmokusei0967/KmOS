@@ -95,7 +95,7 @@
       transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .profile-backing {
-      background: linear-gradient(135deg, #3e548c 0%, #3e548c 68%, #d8bd68 68%, #d8bd68 100%);
+      background-color: #d8bd68;
     }
 
     /* 大頭像點擊回彈動畫 */
@@ -256,7 +256,7 @@
   ========================================================== -->
   <div class="relative w-full max-w-[980px] flex-1 my-2 lg:my-6">
     
-    <!-- 右上偏移背板 (圖1為藍灰色 #3e548c，圖2~7自動切換為金黃色 #d8bd68) -->
+    <!-- 右上偏移背板：主頁與其他頁面皆使用作品頁的金黃色背板 -->
     <div id="backingPlate" 
          class="backing-plate profile-backing absolute -top-4 sm:-top-7 left-5 sm:left-8 -right-3 sm:-right-7 bottom-4 sm:bottom-7 z-0 pointer-events-none shadow-md">
       <!-- 終末地工業邊角刻度裝飾 -->
@@ -684,7 +684,7 @@
           }
         });
 
-        // 切換右上角背板顏色：個人資料用藍灰 (#3e548c)，其餘用金黃 (#d8bd68)
+        // 切換右上角背板顏色：所有頁面皆使用金黃色 (#d8bd68)
         if (tabKey === 'profile') {
           backingPlate.classList.remove('bg-ef-goldBack');
           backingPlate.classList.remove('bg-ef-slateBack');
