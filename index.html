@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KmOS | Official Portal</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card-bg: rgba(26, 29, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      --hover-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .glow-bg {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(236, 72, 153, 0.1) 50%, transparent 70%);
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(50px);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 580px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 40px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 20px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      background: #10b981;
+      border-radius: 50%;
+      border: 3px solid #1a1d27;
+    }
+
+    .creator-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .creator-bio {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-sub);
+      margin: 24px 0 12px;
+      text-align: left;
+      font-weight: 600;
+      padding-left: 4px;
+    }
+
+    .links-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .link-card:hover {
+      background: var(--hover-bg);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .icon-pixiv { color: #0096fa; }
+    .icon-x { color: #ffffff; }
+    .icon-fanbox { color: #ffbe00; }
+    .icon-patreon { color: #ff424d; }
+    .icon-discord { color: #5865f2; }
+
+    .link-text {
+      text-align: left;
+    }
+
+    .link-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    .link-desc {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    .link-arrow {
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      opacity: 0.6;
+      transition: transform 0.2s ease;
+    }
+
+    .link-card:hover .link-arrow {
+      transform: translateX(4px);
+      opacity: 1;
+      color: #fff;
+    }
+
+    footer {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+
+  <div class="container">
+    <div class="avatar-wrapper">
+      <img src="https://unavatar.io/x/kinmokuse967" alt="KmOS Avatar" class="avatar">
+      <div class="status-badge" title="Active"></div>
+    </div>
+    
+    <h1 class="creator-name">KmOS</h1>
+    <p class="creator-bio">Illustrator & Character Art Creator<br>插畫創作 ｜ 同人誌 ｜ 原創與二創展示</p>
+
+    <!-- 社交與作品庫 -->
+    <div class="section-title">Portfolios & Socials</div>
+    <div class="links-grid">
+      <!-- Pixiv -->
+      <a href="https://www.pixiv.net/users/58370556" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-left">
+          <div class="icon-box icon-pixiv"><i class="fa-brands fa-pixiv"></i></div>
+          <div class="link-text">
+            <span class="link-title">Pixiv</span>
+            <span class="link-desc">高畫質完整插畫圖集作品庫</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right link-arrow"></i>
+      </a>
+
+      <!-- X (Twitter) -->
+      <a href="https://x.com/kinmokuse967" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-left">
+          <div class="icon-box icon-x"><i class="fa-brands fa-x-twitter"></i></div>
+          <div class="link-text">
+            <span class="link-title">X (Twitter)</span>
+            <span class="link-desc">@kinmokuse967 ｜ 塗鴉速報與發文通知</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right link-arrow"></i>
+      </a>
+    </div>
+
+    <!-- 支援平台與社群 -->
+    <div class="section-title">Support & Community</div>
+    <div class="links-grid">
+      <!-- pixivFANBOX -->
+      <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-left">
+          <div class="icon-box icon-fanbox"><i class="fa-solid fa-cube"></i></div>
+          <div class="link-text">
+            <span class="link-title">pixivFANBOX</span>
+            <span class="link-desc">限定差分、PSD分層檔與創作贊助</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right link-arrow"></i>
+      </a>
+
+      <!-- Patreon -->
+      <a href="https://www.patreon.com/kmos" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-left">
+          <div class="icon-box icon-patreon"><i class="fa-brands fa-patreon"></i></div>
+          <div class="link-text">
+            <span class="link-title">Patreon</span>
+            <span class="link-desc">海外贊助者專屬內容與支援</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right link-arrow"></i>
+      </a>
+
+      <!-- Discord -->
+      <a href="https://discord.gg/你的Discord邀請碼" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-left">
+          <div class="icon-box icon-discord"><i class="fa-brands fa-discord"></i></div>
+          <div class="link-text">
+            <span class="link-title">KmOS 奇妙小屋</span>
+            <span class="link-desc">官方 Discord 伺服器・交流與福利領取</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right link-arrow"></i>
+      </a>
+    </div>
+
+    <footer>
+      © 2026 KmOS. All Rights Reserved.
+    </footer>
+  </div>
+
+</body>
+</html>
