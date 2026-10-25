@@ -840,48 +840,83 @@
 
       // 實時連接 Pixiv UID 58370556 抓取最新 10 筆作品 ID 與縮圖
       async function fetchLatestPixivWorks() {
-        try {
-          const targetUrl = `https://www.pixiv.net/ajax/user/${CONFIG.pixivUserId}/profile/all?lang=zh_tw`;
-          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-          const response = await fetch(proxyUrl);
-          if (!response.ok) throw new Error('Proxy response not ok');
+        const targetUrl =
+          `https://www.pixiv.net/ajax/user/${CONFIG.pixivUserId}/profile/all?lang=zh_tw`;
 
-          const wrapper = await response.json();
-          const data = JSON.parse(wrapper.contents);
+        const proxyUrls = [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+          `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
+        ];
 
-          if (data && !data.error && data.body && data.body.illusts) {
+        for (const proxyUrl of proxyUrls) {
+          try {
+            const response = await fetch(proxyUrl, {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json'
+              },
+              cache: 'no-store'
+            });
+
+            if (!response.ok) {
+              throw new Error(`Proxy HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const illusts = data?.body?.illusts;
+
+            if (!illusts || typeof illusts !== 'object') {
+              throw new Error('Pixiv illusts data not found');
+            }
+
             // Pixiv illusts 的 key 為作品 ID，按數值由大到小排序即為最新作品
-            const illustIds = Object.keys(data.body.illusts)
+            const illustIds = Object.keys(illusts)
               .sort((a, b) => Number(b) - Number(a))
               .slice(0, 10);
 
-            if (illustIds.length > 0) {
-              artworksList = illustIds.map((id, idx) => ({
-                id: id,
-                title: `Pixiv 作品 #${id}`,
-                // 使用 Pixiv 公開反向代理縮圖服務 i.pixiv.cat，若載入失敗自動退回高畫質預覽圖
-                img: `https://i.pixiv.cat/c/540x540_70/img-master/img/${id}_p0_master1200.jpg`,
-                fallbackImg: CONFIG.fallbackArtworks[idx % CONFIG.fallbackArtworks.length].img,
-                url: `https://www.pixiv.net/artworks/${id}`
-              }));
-
-              pixivSyncBadge.innerHTML = `
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>已實時同步 Pixiv (UID: ${CONFIG.pixivUserId}) 最新 ${artworksList.length} 件作品</span>
-              `;
-              if (!sections.works.classList.contains('hidden')) {
-                renderWorksCarousel(true);
-              }
-              return;
+            if (illustIds.length === 0) {
+              throw new Error('No Pixiv artworks found');
             }
+
+            artworksList = illustIds.map((id, idx) => ({
+              id,
+              title: `Pixiv 作品 #${id}`,
+              // 使用 Pixiv 公開反向代理縮圖服務，若載入失敗自動退回備用圖片
+              img: `https://i.pixiv.cat/img-master/img/${id}_p0_master1200.jpg`,
+              fallbackImg: CONFIG.fallbackArtworks[
+                idx % CONFIG.fallbackArtworks.length
+              ].img,
+              url: `https://www.pixiv.net/artworks/${id}`
+            }));
+
+            pixivSyncBadge.innerHTML = `
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>已實時同步 Pixiv (UID: ${CONFIG.pixivUserId}) 最新 ${artworksList.length} 件作品</span>
+            `;
+
+            currentStartIndex = 0;
+
+            if (!sections.works.classList.contains('hidden')) {
+              renderWorksCarousel(true);
+            }
+
+            return;
+          } catch (error) {
+            console.warn('Pixiv proxy failed:', proxyUrl, error);
           }
-          throw new Error('Illusts list empty');
-        } catch (err) {
-          // 若受限於瀏覽器跨網域限制，平滑使用預置的 10 件作品並直連你的 Pixiv 主頁/作品頁
-          pixivSyncBadge.innerHTML = `
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>已連結 Pixiv @KmOS (最近 10 件精選作品)</span>
-          `;
+        }
+
+        // 所有代理都失敗時，使用預置作品，避免作品頁面留白
+        pixivSyncBadge.innerHTML = `
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>Pixiv 暫時無法連線，顯示預設作品</span>
+        `;
+
+        artworksList = [...CONFIG.fallbackArtworks];
+        currentStartIndex = 0;
+
+        if (!sections.works.classList.contains('hidden')) {
+          renderWorksCarousel(true);
         }
       }
 
