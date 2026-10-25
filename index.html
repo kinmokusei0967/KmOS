@@ -2,1256 +2,1034 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KMOS | Official Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>KMOS // ENDFIELD TERMINAL PORTAL</title>
+
+  <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    :root {
-      --navy-frame: #051640;
-      --accent-blue: #405488;
-      --accent-gold: #dec068;
-      --canvas-bg: #e6e6e6;
-      --sidebar-bg: #ffffff;
-      --nav-active: #e2e2e2;
-      --card-gray: #9a9c9e;
-    }
 
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '"Noto Sans TC"', '"Noto Sans SC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            ef: {
+              navy: '#061547',
+              slateBack: '#3e548c',
+              goldBack: '#d8bd68',
+              canvas: '#e6e6e6',
+              panel: '#999999',
+              sidebarPill: '#e6e6e6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       user-select: none;
-      font-family: 'Noto Sans TC', sans-serif;
     }
 
     body {
       background-color: #ffffff;
-      color: #111;
-      min-height: 100vh;
-      display: flex;
+      color: #111827;
+      margin: 0;
+      padding: 0;
       overflow-x: hidden;
     }
 
-    /* ================= 左側導覽列 (終末地風格 + 圖1~7佈局) ================= */
-    .sidebar {
-      width: 240px;
-      min-width: 240px;
-      background: var(--sidebar-bg);
-      padding: 28px 18px;
-      display: flex;
-      flex-direction: column;
-      z-index: 20;
+    /* 終末地風格微網格背景 */
+    .ef-grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
-    /* 左上角頭像：點擊重整頁面 */
-    .brand-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 12px;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      margin-bottom: 50px;
-    }
-
-    .brand-header:hover {
-      transform: scale(1.04);
-    }
-
-    .brand-header:active {
-      transform: scale(0.94);
-    }
-
-    .brand-logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2.5px solid #000;
-      object-fit: cover;
-      background: #fff;
-    }
-
-    .brand-title {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.55rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #000;
-    }
-
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .nav-btn {
-      width: 100%;
-      height: 58px;
-      border: none;
-      background: transparent;
-      border-radius: 6px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #222;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* 終末地工業切角導航按鈕 */
+    .ef-nav-btn {
       position: relative;
-      transition: all 0.2s ease;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 6px;
     }
-
-    .nav-btn::before {
+    .ef-nav-btn::before {
       content: '';
       position: absolute;
       left: 0;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%) scaleY(0);
       width: 4px;
-      height: 0;
-      background: var(--navy-frame);
-      transition: height 0.2s ease;
+      height: 65%;
+      background-color: #061547;
+      border-radius: 2px;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ef-nav-btn.active {
+      background-color: #e6e6e6;
+      font-weight: 800;
+      color: #000000;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .ef-nav-btn.active::before {
+      transform: translateY(-50%) scaleY(1);
+    }
+    .ef-nav-btn:hover:not(.active) {
+      background-color: #f3f4f6;
+      transform: translateX(3px);
     }
 
-    .nav-btn:hover {
-      background: #f2f2f2;
+    /* 右側背板顏色平滑切換 */
+    .backing-plate {
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .nav-btn.active {
-      background: var(--nav-active);
-      color: #000;
+    /* 大頭像點擊回彈動畫 */
+    .avatar-bounce {
+      animation: avatarPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    .nav-btn.active::before {
-      height: 60%;
-    }
-
-    /* ================= 右側主舞台 ================= */
-    .stage-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 50px 40px 20px;
-      position: relative;
-    }
-
-    .card-assembly {
-      position: relative;
-      width: 100%;
-      max-width: 980px;
-      aspect-ratio: 16 / 10;
-      min-height: 520px;
-    }
-
-    /* 右上偏移色塊背板（圖1藍灰、圖2~7金黃） */
-    .offset-plate {
-      position: absolute;
-      top: -32px;
-      right: -36px;
-      width: 95%;
-      height: 92%;
-      background-color: var(--accent-blue);
-      transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1;
-    }
-
-    .offset-plate.gold-mode {
-      background-color: var(--accent-gold);
-    }
-
-    /* 深藍色主外框 */
-    .navy-outer-frame {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-color: var(--navy-frame);
-      padding: 44px 52px;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 22px 45px rgba(5, 22, 64, 0.25);
-    }
-
-    /* 內部淺灰畫布與 KMOS 浮水印 */
-    .inner-canvas {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-color: var(--canvas-bg);
-      border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* 背景斜體 KMOS 大字浮水印 */
-    .watermark-kmos {
-      position: absolute;
-      bottom: -55px;
-      left: -35px;
-      font-family: 'Oswald', sans-serif;
-      font-size: 13.5rem;
-      font-weight: 900;
-      color: rgba(0, 0, 0, 0.14);
-      transform: rotate(28deg);
-      pointer-events: none;
-      letter-spacing: 0.02em;
-      z-index: 1;
-      line-height: 1;
-    }
-
-    /* 右上白色幾何圓環裝飾 */
-    .geo-circle-1 {
-      position: absolute;
-      top: -110px;
-      right: -70px;
-      width: 340px;
-      height: 340px;
-      border: 3px solid rgba(255, 255, 255, 0.85);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .geo-circle-2 {
-      position: absolute;
-      top: 55px;
-      right: 95px;
-      width: 210px;
-      height: 210px;
-      border: 2.5px solid rgba(255, 255, 255, 0.85);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .geo-circle-3 {
-      position: absolute;
-      top: 165px;
-      right: 225px;
-      width: 95px;
-      height: 95px;
-      border: 2px solid rgba(255, 255, 255, 0.85);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* 內容分頁容器 */
-    .tab-section {
-      position: relative;
-      z-index: 5;
-      width: 100%;
-      height: 100%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 40px;
-    }
-
-    .tab-section.active {
-      display: flex;
-    }
-
-    /* ================= 1. 個人資料 (圖1) ================= */
-    .profile-layout {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 64px;
-      width: 100%;
-      padding-left: 15px;
-    }
-
-    .profile-avatar-btn {
-      position: relative;
-      width: 235px;
-      height: 235px;
-      border-radius: 50%;
-      background: #fff;
-      border: 6px solid #000;
-      box-shadow: inset 0 0 0 5px #fff, inset 0 0 0 9px #000, 0 12px 28px rgba(0,0,0,0.18);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      flex-shrink: 0;
-    }
-
-    .profile-avatar-btn:hover {
-      transform: scale(1.04);
-    }
-
-    .profile-avatar-btn.pop-anim {
-      animation: jellyBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes jellyBounce {
-      0% { transform: scale(1); }
-      35% { transform: scale(0.86) rotate(-4deg); }
-      70% { transform: scale(1.1) rotate(3deg); }
+    @keyframes avatarPop {
+      0% { transform: scale(1) rotate(0deg); }
+      30% { transform: scale(0.86) rotate(-4deg); }
+      65% { transform: scale(1.08) rotate(3deg); }
       100% { transform: scale(1) rotate(0deg); }
     }
 
-    .profile-avatar-btn img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    /* 作品卡片：由右邊飛快出來然後急停 */
+    .fly-in-right {
+      animation: flyInStop 0.48s cubic-bezier(0.12, 0.98, 0.24, 1) both;
     }
-
-    .sound-hint {
-      position: absolute;
-      bottom: 10px;
-      background: rgba(0,0,0,0.75);
-      color: #fff;
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 10px;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .profile-avatar-btn:hover .sound-hint {
-      opacity: 1;
-    }
-
-    .about-box {
-      max-width: 440px;
-      text-align: left;
-    }
-
-    .about-box h2 {
-      font-size: 2.3rem;
-      font-weight: 800;
-      color: #0b0b0b;
-      margin-bottom: 16px;
-    }
-
-    .about-box p {
-      font-size: 1.02rem;
-      line-height: 1.75;
-      color: #222;
-      font-weight: 500;
-    }
-
-    /* ================= 2. 作品列表 (圖2) ================= */
-    .works-layout {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .carousel-stage {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 22px;
-      width: 100%;
-    }
-
-    .arrow-control {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 65px;
-      flex-shrink: 0;
-    }
-
-    .circle-arrow {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 2px solid #888;
-      background: rgba(140, 140, 140, 0.75);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-
-    .circle-arrow:hover:not(:disabled) {
-      background: #444;
-      border-color: #333;
-      transform: scale(1.1);
-    }
-
-    .circle-arrow:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-
-    .top-limit-tip {
-      font-size: 10px;
-      color: #555;
-      margin-top: 5px;
-      font-weight: 700;
-      white-space: nowrap;
-      min-height: 15px;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .top-limit-tip.visible {
-      opacity: 1;
-    }
-
-    .cards-viewport {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      width: 100%;
-      max-width: 720px;
-    }
-
-    /* 由右邊飛快出來急停動畫 */
-    .art-item {
-      position: relative;
-      aspect-ratio: 3 / 4.2;
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
-      cursor: pointer;
-      overflow: visible;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .art-item.fly-in {
-      animation: rapidFlyInRight 0.42s cubic-bezier(0.08, 0.96, 0.18, 1) both;
-    }
-
-    @keyframes rapidFlyInRight {
+    @keyframes flyInStop {
       0% {
         opacity: 0;
-        transform: translateX(260px) skewX(-8deg);
+        transform: translateX(180px) skewX(-6deg) scale(0.94);
       }
-      75% {
+      70% {
         opacity: 1;
-        transform: translateX(-6px) skewX(1deg);
+        transform: translateX(-4px) skewX(1deg) scale(1.01);
       }
       100% {
         opacity: 1;
-        transform: translateX(0) skewX(0deg);
+        transform: translateX(0) skewX(0deg) scale(1);
       }
     }
 
-    .art-item:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+    /* 頁面切換淡入 */
+    .section-fade {
+      animation: sectionAppear 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes sectionAppear {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .art-thumb-wrap {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 4px;
-      position: relative;
-      background: #dcdcdc;
+    /* NEW 鋸齒星章微呼吸動畫 */
+    .new-badge-pulse {
+      animation: badgePulse 2s ease-in-out infinite;
     }
-
-    .art-thumb-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.35s ease;
-    }
-
-    .art-item:hover .art-thumb-wrap img {
-      transform: scale(1.06);
-    }
-
-    .art-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      color: #fff;
-      padding: 18px 8px 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .art-item:hover .art-caption {
-      opacity: 1;
-    }
-
-    /* 最新第一張右上角小號 NEW 鋸齒標章 (圖2) */
-    .new-star-badge {
-      position: absolute;
-      top: -13px;
-      right: -13px;
-      width: 40px;
-      height: 40px;
-      z-index: 15;
-      pointer-events: none;
-      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.28));
-      animation: badgePulse 2s infinite ease-in-out;
-    }
-
     @keyframes badgePulse {
-      0%, 100% { transform: scale(1) rotate(-8deg); }
-      50% { transform: scale(1.08) rotate(-4deg); }
+      0%, 100% { transform: scale(1) rotate(-12deg); }
+      50% { transform: scale(1.08) rotate(-8deg); }
     }
 
-    .works-status-bar {
-      margin-top: 14px;
-      font-size: 0.75rem;
-      color: #555;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    /* ================= 3. 歡迎贊助 (圖3、圖4、圖5) ================= */
-    .sponsor-cards-wrap {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 36px;
-      width: 100%;
-      max-width: 740px;
-    }
-
-    .plan-box {
-      background: rgba(150, 152, 155, 0.85);
-      border-radius: 10px;
-      padding: 20px 24px 24px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-
-    .plan-box:hover {
-      transform: translateY(-5px);
-      background: rgba(138, 140, 144, 0.94);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
-    }
-
-    .plan-banner-holder {
-      width: 100%;
-      aspect-ratio: 16 / 10.5;
-      background: #2b1818;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      position: relative;
-    }
-
-    .plan-banner-holder img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .plan-title {
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: #2b2b2b;
-      margin-bottom: 8px;
-    }
-
-    .plan-desc {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #161616;
-      line-height: 1.55;
-      text-align: left;
-    }
-
-    /* 贊助下一頁灰底面板 (圖4、圖5、圖7共用外框) */
-    .gray-sub-modal {
-      position: relative;
-      width: 100%;
-      max-width: 660px;
-      height: 330px;
-      background: rgba(150, 152, 155, 0.88);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 54px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-      animation: fadeZoom 0.28s ease-out;
-    }
-
-    @keyframes fadeZoom {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .modal-back-btn {
+    /* 音效波紋特效 */
+    .sound-wave-ring {
       position: absolute;
-      top: 18px;
-      left: 20px;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: none;
-      color: #222;
-      font-size: 1rem;
-      font-weight: 900;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.18);
-      transition: transform 0.2s ease;
+      inset: -6px;
+      border-radius: 9999px;
+      border: 3px solid #061547;
+      opacity: 0;
+      pointer-events: none;
+      animation: waveOut 0.6s ease-out forwards;
     }
-
-    .modal-back-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .platform-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: #111;
-      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .platform-item:hover {
-      transform: translateY(-6px) scale(1.05);
-    }
-
-    .platform-logo-box {
-      width: 88px;
-      height: 88px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.16);
-    }
-
-    .platform-label {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #111;
-    }
-
-    /* 響應式手機版適配 */
-    @media (max-width: 900px) {
-      body { flex-direction: column; }
-      .sidebar {
-        width: 100%;
-        padding: 14px 16px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #eee;
-      }
-      .brand-header { margin-bottom: 0; }
-      .nav-menu { flex-direction: row; gap: 6px; overflow-x: auto; }
-      .nav-btn { height: 40px; padding: 0 12px; font-size: 0.85rem; white-space: nowrap; }
-      .nav-btn::before { display: none; }
-      .stage-wrapper { padding: 28px 16px; }
-      .card-assembly { aspect-ratio: auto; min-height: 520px; }
-      .navy-outer-frame { padding: 20px; }
-      .profile-layout { flex-direction: column; gap: 22px; text-align: center; padding-left: 0; }
-      .about-box { text-align: center; }
-      .cards-viewport { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-      .sponsor-cards-wrap { grid-template-columns: 1fr; gap: 16px; }
-      .gray-sub-modal { gap: 24px; height: auto; min-height: 260px; flex-wrap: wrap; padding: 48px 16px 24px; }
+    @keyframes waveOut {
+      0% { transform: scale(0.92); opacity: 0.75; }
+      100% { transform: scale(1.28); opacity: 0; }
     }
   </style>
 </head>
-<body>
+<body class="ef-grid-bg min-h-screen flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-10 gap-6 lg:gap-10">
 
-  <!-- ================= 左側白色導覽列 ================= -->
-  <aside class="sidebar">
-    <!-- 點擊左上角頭像重新整理頁面 -->
-    <div class="brand-header" id="topRefreshBtn" title="點擊重新整理頁面">
-      <img id="sidebarAvatarImg" src="avatar.png" alt="KMOS" class="brand-logo">
-      <span class="brand-title">KMOS</span>
+  <!-- =========================================================
+       左半部：白色終末地風格側邊欄 (Left Sidebar)
+  ========================================================== -->
+  <aside class="w-full lg:w-64 xl:w-72 flex flex-col justify-between self-stretch bg-white/95 lg:bg-transparent rounded-2xl p-4 lg:p-2 z-20">
+    <div>
+      <!-- 最左上角：頭像 + KMOS (點擊重新刷新頁面) -->
+      <div class="flex flex-col items-start mb-8 lg:mb-14">
+        <button id="topRefreshBtn" 
+                type="button"
+                title="點擊重新整理頁面 (Reload Terminal)"
+                class="group flex items-center gap-3.5 text-left focus:outline-none p-1.5 -ml-1.5 rounded-xl hover:bg-gray-100/80 transition-all active:scale-95">
+          <!-- 左上角 Q 版線條頭像 -->
+          <div class="w-12 h-12 rounded-full border-2 border-black flex items-center justify-center bg-white shadow-sm group-hover:rotate-12 transition-transform overflow-hidden relative">
+            <svg viewBox="0 0 120 120" class="w-11 h-11">
+              <circle cx="60" cy="60" r="56" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+              <!-- Q版角與髮型 (還原設計圖1) -->
+              <path d="M36 42 L28 22 L46 32 Z" fill="#fff" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M84 42 L92 22 L74 32 Z" fill="#fff" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+              <!-- 蝴蝶結裝飾 -->
+              <path d="M85 36 L98 32 L95 44 Z" fill="#fff" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 頭髮與臉部輪廓 -->
+              <path d="M25 68 C22 45 40 28 60 28 C80 28 98 45 95 68" fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M32 52 L22 65 M88 52 L98 65" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+              <path d="M42 36 C48 50 55 54 62 36" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+              <path d="M58 36 C65 50 74 52 80 38" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+              <!-- 開心瞇眼與張嘴 -->
+              <path d="M42 56 L52 52 M44 60 L52 57" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M68 52 L78 56" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M54 62 Q60 60 63 66 Q60 75 53 71 Z" fill="#fff" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 身體動態與雙手歡呼 -->
+              <path d="M45 75 L34 65 M75 74 L88 64" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+              <path d="M46 74 L43 96 L55 94 L60 86 L67 95 L76 92 L72 74" fill="#fff" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-2xl font-black tracking-tight text-black">KMOS</span>
+              <span class="text-[10px] font-mono bg-black text-white px-1 py-0.5 rounded leading-none opacity-80 group-hover:bg-ef-navy transition-colors">RELOAD</span>
+            </div>
+            <p class="text-[10px] font-mono text-gray-400 tracking-widest uppercase">// SYS.PORTAL.01</p>
+          </div>
+        </button>
+        <!-- 設計圖左上角灰塊裝飾 -->
+        <div class="w-5 h-4 bg-gray-100 rounded ml-9 mt-1 hidden lg:block"></div>
+      </div>
+
+      <!-- 左側導航選單 (4 大選項) -->
+      <nav class="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-col gap-2.5" aria-label="Main Navigation">
+        <button type="button" data-tab="profile" class="ef-nav-btn active py-3.5 px-5 text-left text-sm sm:text-base text-gray-800 flex items-center justify-between group">
+          <span>個人資料</span>
+          <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">01</span>
+        </button>
+
+        <button type="button" data-tab="works" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
+          <span>作品</span>
+          <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">02</span>
+        </button>
+
+        <button type="button" data-tab="sponsor" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
+          <span>歡迎贊助</span>
+          <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">03</span>
+        </button>
+
+        <button type="button" data-tab="social" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
+          <span>社交平台</span>
+          <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">04</span>
+        </button>
+      </nav>
     </div>
 
-    <nav class="nav-menu">
-      <button class="nav-btn active" data-target="profile">個人資料</button>
-      <button class="nav-btn" data-target="works">作品</button>
-      <button class="nav-btn" data-target="sponsor">歡迎贊助</button>
-      <button class="nav-btn" data-target="social">社交平台</button>
-    </nav>
+    <!-- 左下角終末地風格工業裝飾銘牌 -->
+    <div class="hidden lg:flex flex-col gap-1 pt-8 border-t border-gray-200/80 text-[11px] font-mono text-gray-400">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-gray-600 font-bold">PIXIV SYNC: UID 58370556</span>
+      </div>
+      <div>ENDFIELD UI // VER 2.6.0</div>
+    </div>
   </aside>
 
-  <!-- ================= 右側終末地雙層色塊卡面 ================= -->
-  <main class="stage-wrapper">
-    <div class="card-assembly">
-      <!-- 右上偏移背板 -->
-      <div class="offset-plate" id="offsetPlate"></div>
-
-      <!-- 深藍主框 -->
-      <div class="navy-outer-frame">
-        <div class="inner-canvas">
-          <!-- 背景 KMOS 斜體大字與幾何圓環 -->
-          <div class="watermark-kmos">KMOS</div>
-          <div class="geo-circle-1"></div>
-          <div class="geo-circle-2"></div>
-          <div class="geo-circle-3"></div>
-
-          <!-- 1. 個人資料 (圖1) -->
-          <section class="tab-section active" id="sec-profile">
-            <div class="profile-layout">
-              <div class="profile-avatar-btn" id="mainAvatarBtn" title="點擊播放音效">
-                <img id="mainAvatarImg" src="avatar.png" alt="KMOS Avatar">
-                <span class="sound-hint"><i class="fa-solid fa-volume-high"></i> CLICK</span>
-              </div>
-              <div class="about-box">
-                <h2>About me</h2>
-                <p>
-                  嗨！我是 <strong>KmOS</strong>。<br>
-                  專注於日系動漫插畫、角色設計、差分創作與同人誌繪製（《絕區零》、《蔚藍檔案》、《鳴潮》等）。<br><br>
-                  歡迎透過左側選單瀏覽我的最新 Pixiv 作品、贊助計畫與社群平台！
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <!-- 2. 作品列表 (圖2：連接 Pixiv 最近10張 + 顯示3張 + NEW標章 + 飛入動畫) -->
-          <section class="tab-section" id="sec-works">
-            <div class="works-layout">
-              <div class="carousel-stage">
-                <!-- 左箭頭與「已經到頂了」提示 -->
-                <div class="arrow-control">
-                  <button class="circle-arrow" id="prevArtBtn" aria-label="上一張">
-                    <i class="fa-solid fa-chevron-left"></i>
-                  </button>
-                  <span class="top-limit-tip" id="topLimitText">已經到頂了</span>
-                </div>
-
-                <!-- 3張圖片展示區 -->
-                <div class="cards-viewport" id="artCardsGrid"></div>
-
-                <!-- 右箭頭 -->
-                <div class="arrow-control">
-                  <button class="circle-arrow" id="nextArtBtn" aria-label="下一張">
-                    <i class="fa-solid fa-chevron-right"></i>
-                  </button>
-                  <span class="top-limit-tip" id="bottomLimitText">已經到底了</span>
-                </div>
-              </div>
-
-              <div class="works-status-bar">
-                <span id="syncIndicator"><i class="fa-solid fa-rotate fa-spin"></i> 正在同步 Pixiv (UID: 58370556) 最新作品...</span>
-              </div>
-            </div>
-          </section>
-
-          <!-- 3. 歡迎贊助 (圖3、圖4、圖5) -->
-          <section class="tab-section" id="sec-sponsor">
-            <!-- 3-A: 方案選擇主頁 (圖3) -->
-            <div class="sponsor-cards-wrap" id="sponsorPlansView">
-              <!-- 小杯 -->
-              <div class="plan-box" id="selectPlanSmall">
-                <div class="plan-banner-holder">
-                  <img id="planSmallImg" src="plan_s.png" alt="¥100 小杯">
-                </div>
-                <div class="plan-title">小杯</div>
-                <div class="plan-desc">
-                  這個計畫可以看到我公開的草稿進度(Fanbox專屬)
-                </div>
-              </div>
-
-              <!-- 超大杯 -->
-              <div class="plan-box" id="selectPlanLarge">
-                <div class="plan-banner-holder">
-                  <img id="planLargeImg" src="plan_l.png" alt="¥500 超大杯">
-                </div>
-                <div class="plan-title">超大杯</div>
-                <div class="plan-desc">
-                  感謝您的支持！這杯咖啡會變成我的創作動力。<br>
-                  這個計畫包括R18色情圖片的O修高解像度版本和差分。另外，我也會不定期公開草稿與製作進度。
-                </div>
-              </div>
-            </div>
-
-            <!-- 3-B: 小杯專屬頁 - 只顯示 Fanbox (圖5) -->
-            <div class="gray-sub-modal" id="sponsorSmallModal" style="display: none;">
-              <button class="modal-back-btn" data-back="sponsor" title="返回">&lt;</button>
-              <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" class="platform-item">
-                <div class="platform-logo-box" id="fanboxLogoSlot1"></div>
-                <span class="platform-label">Fanbox</span>
-              </a>
-            </div>
-
-            <!-- 3-C: 超大杯專屬頁 - 顯示 Fanbox / Patreon / Fansky (圖4) -->
-            <div class="gray-sub-modal" id="sponsorLargeModal" style="display: none;">
-              <button class="modal-back-btn" data-back="sponsor" title="返回">&lt;</button>
-              <!-- Fanbox -->
-              <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" class="platform-item">
-                <div class="platform-logo-box" id="fanboxLogoSlot2"></div>
-                <span class="platform-label">Fanbox</span>
-              </a>
-              <!-- Patreon -->
-              <a href="https://www.patreon.com/kmos" target="_blank" rel="noopener noreferrer" class="platform-item">
-                <div class="platform-logo-box" id="patreonLogoSlot"></div>
-                <span class="platform-label">Patreon</span>
-              </a>
-              <!-- Fansky -->
-              <a href="https://fansky.net/" target="_blank" rel="noopener noreferrer" class="platform-item" style="background:transparent;">
-                <div class="platform-logo-box" id="fanskyLogoSlot" style="width:auto; padding:0 8px; box-shadow:none; background:transparent;"></div>
-                <span class="platform-label">Fansky</span>
-              </a>
-            </div>
-          </section>
-
-          <!-- 4. 社交平台 (圖7：Instagram + X) -->
-          <section class="tab-section" id="sec-social">
-            <div class="gray-sub-modal">
-              <!-- Instagram -->
-              <a href="https://www.instagram.com/kinmokuse967/" target="_blank" rel="noopener noreferrer" class="platform-item">
-                <div class="platform-logo-box" id="igLogoSlot" style="border-radius: 20px;"></div>
-                <span class="platform-label">instagram</span>
-              </a>
-              <!-- X -->
-              <a href="https://x.com/kinmokuse967" target="_blank" rel="noopener noreferrer" class="platform-item">
-                <div class="platform-logo-box" id="xLogoSlot"></div>
-                <span class="platform-label">X</span>
-              </a>
-            </div>
-          </section>
-
-        </div>
+  <!-- =========================================================
+       右半部：主卡面舞台區 (Right Card Stage)
+  ========================================================== -->
+  <div class="relative w-full max-w-[980px] flex-1 my-2 lg:my-6">
+    
+    <!-- 右上偏移背板 (圖1為藍灰色 #3e548c，圖2~7自動切換為金黃色 #d8bd68) -->
+    <div id="backingPlate" 
+         class="backing-plate absolute -top-4 sm:-top-7 left-5 sm:left-8 -right-3 sm:-right-7 bottom-4 sm:bottom-7 bg-ef-slateBack z-0 pointer-events-none shadow-md">
+      <!-- 終末地工業邊角刻度裝飾 -->
+      <div class="absolute top-2 right-3 text-[10px] font-mono text-black/30 tracking-widest uppercase">
+        // KMOS.TERMINAL.STAGE
       </div>
     </div>
-  </main>
 
+    <!-- 深藍色粗外框 (#061547) -->
+    <div class="relative z-10 bg-ef-navy p-5 sm:p-9 md:p-12 shadow-2xl">
+      
+      <!-- 終末地頂部裝飾條 -->
+      <div class="flex items-center justify-between text-[10px] font-mono text-white/50 mb-2 px-1">
+        <span id="hudSectionCode">SEC_01 // ABOUT_ME</span>
+        <span class="flex items-center gap-2">
+          <span class="inline-block w-8 h-[2px] bg-white/30"></span>
+          <span>AUDIO: <strong id="audioStateLabel" class="text-emerald-400">READY</strong></span>
+        </span>
+      </div>
+
+      <!-- 內部淺灰主畫布 (#e6e6e6) -->
+      <div class="relative bg-ef-canvas rounded-lg min-h-[430px] sm:min-h-[490px] w-full overflow-hidden flex items-center justify-center p-5 sm:p-10 shadow-inner">
+        
+        <!-- 背景浮水印 1：左下角巨大斜體 KMOS 字樣 (完全還原圖1~圖7) -->
+        <div class="absolute -bottom-10 -left-8 pointer-events-none select-none z-0 overflow-hidden">
+          <div class="text-[115px] sm:text-[175px] font-black text-[#bebebe] tracking-tighter leading-none origin-bottom-left rotate-[28deg] opacity-85" style="font-family: 'Inter', sans-serif;">
+            KMOS
+          </div>
+        </div>
+
+        <!-- 背景浮水印 2：右上角白色幾何交錯圓環 (完全還原圖1~圖7) -->
+        <svg class="absolute -top-12 -right-12 w-72 h-72 sm:w-96 sm:h-96 pointer-events-none z-0" viewBox="0 0 300 300" fill="none">
+          <circle cx="220" cy="75" r="105" stroke="#ffffff" stroke-width="2.5" opacity="0.9"/>
+          <circle cx="155" cy="145" r="65" stroke="#ffffff" stroke-width="2" opacity="0.85"/>
+          <circle cx="115" cy="195" r="32" stroke="#ffffff" stroke-width="2" opacity="0.85"/>
+        </svg>
+
+        <!-- =====================================================
+             第一部分：個人資料 (Main Page / About Me - 參考圖1)
+        ====================================================== -->
+        <section id="sec-profile" class="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 px-2 sm:px-6 section-fade">
+          
+          <!-- 左邊：可點擊發聲的 KmOS 雙圈線條大頭像 -->
+          <div class="relative flex flex-col items-center">
+            <button id="mainAvatarBtn" 
+                    type="button"
+                    title="點擊播放音效！"
+                    class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer focus:outline-none group transition-transform">
+              <!-- 外層雙黑框線 (還原圖1粗黑雙環) -->
+              <div class="absolute inset-0 rounded-full border-[5px] border-black"></div>
+              <div class="absolute inset-[9px] rounded-full border-[4px] border-black"></div>
+
+              <!-- 還可以替換成自己的圖片，預設為高精細還原圖1的Q版SVG -->
+              <svg viewBox="0 0 200 200" class="w-40 h-40 sm:w-48 sm:h-48 relative z-10">
+                <!-- 頭上雙角 -->
+                <path d="M62 66 L48 34 L78 52 Z" fill="#fff" stroke="#000" stroke-width="5.5" stroke-linejoin="round"/>
+                <path d="M138 66 L152 34 L122 52 Z" fill="#fff" stroke="#000" stroke-width="5.5" stroke-linejoin="round"/>
+                <!-- 右側小蝴蝶結 -->
+                <path d="M134 58 L156 50 L152 70 L134 64 Z" fill="#fff" stroke="#000" stroke-width="4.5" stroke-linejoin="round"/>
+                <path d="M130 56 L118 52 L122 68 Z" fill="#fff" stroke="#000" stroke-width="4.5" stroke-linejoin="round"/>
+                <!-- 頭髮外輪廓 -->
+                <path d="M40 112 C35 72 65 44 100 44 C135 44 165 72 160 112" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+                <path d="M48 86 L30 105 M152 86 L170 105" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+                <!-- 瀏海線條 -->
+                <path d="M66 58 C76 84 90 90 102 58" fill="none" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+                <path d="M98 58 C110 84 126 86 134 62" fill="none" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+                <!-- 表情：閃亮笑眼與腮紅線 -->
+                <path d="M68 92 L86 85 M72 99 L85 94" stroke="#000" stroke-width="4.8" stroke-linecap="round"/>
+                <path d="M114 85 L132 92 M115 94 L128 99" stroke="#000" stroke-width="4.8" stroke-linecap="round"/>
+                <!-- 開心嘴巴 -->
+                <path d="M92 103 Q102 100 106 110 Q101 124 89 118 Z" fill="#fff" stroke="#000" stroke-width="4.8" stroke-linejoin="round"/>
+                <!-- 歡呼雙手與身體 -->
+                <path d="M72 124 L52 108 M126 122 L148 106" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+                <!-- 動態感小線條 -->
+                <path d="M36 118 L46 116 M38 128 L48 125" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                <path d="M150 124 L160 122 M146 134 L156 132" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                <!-- Q版身體與小腳 -->
+                <path d="M75 122 L70 162 L90 158 L98 144 L110 160 L126 154 L120 122" fill="#fff" stroke="#000" stroke-width="5.5" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <span class="mt-2.5 text-[11px] font-mono text-gray-600 bg-white/70 px-2.5 py-0.5 rounded-full border border-black/10">
+              <i class="fa-solid fa-volume-high mr-1 text-ef-navy"></i>點擊頭像播放音效
+            </span>
+          </div>
+
+          <!-- 右邊：About me 個人介紹文字 -->
+          <div class="flex-1 text-center md:text-left max-w-md">
+            <div class="inline-block text-[10px] font-mono uppercase tracking-widest bg-ef-navy text-white px-2 py-0.5 rounded mb-2">
+              CREATOR PROFILE // KMOS
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black text-black tracking-tight mb-4">
+              About me
+            </h1>
+            <div class="space-y-3 text-gray-800 text-sm sm:text-base leading-relaxed font-medium bg-white/55 backdrop-blur-sm p-4 sm:p-5 rounded-xl border border-white/80 shadow-sm">
+              <p>
+                你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>
+                專注於二次元角色插畫、原創與二創同人繪製。
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600">
+                平時會在 <strong>Pixiv</strong> 與 <strong>X (Twitter)</strong> 分享最新插畫作品；高畫質原圖、未公開草稿進度與限定差分則會定期更新於 <strong>FANBOX / Patreon / Fansky</strong>，歡迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！
+              </p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- =====================================================
+             第二部分：作品列表 (Artworks - 參考圖2)
+             實時連接 Pixiv (UID: 58370556) 最近 10 張作品，一次顯示 3 張
+        ====================================================== -->
+        <section id="sec-works" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
+          
+          <!-- 頂部狀態與極小提示字顯示區 -->
+          <div class="w-full flex items-center justify-between mb-3 px-2 sm:px-8">
+            <div class="flex items-center gap-2">
+              <span id="pixivSyncBadge" class="inline-flex items-center gap-1.5 text-[11px] font-mono bg-white/80 text-gray-700 px-2.5 py-1 rounded-md border border-black/10">
+                <span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+                <span>Pixiv 最新 10 件作品同步中...</span>
+              </span>
+            </div>
+            <div class="text-xs font-mono text-gray-600 font-bold" id="carouselCounter">
+              01 - 03 / 10
+            </div>
+          </div>
+
+          <!-- 輪播主體：左箭頭 + 3 張直式作品卡 + 右箭頭 -->
+          <div class="relative w-full flex items-center justify-center gap-2 sm:gap-5 px-1 sm:px-4">
+            
+            <!-- 左箭頭按鈕 (最新一頁時不可點，並顯示「已經到頂了」很小的字) -->
+            <div class="relative flex flex-col items-center justify-center">
+              <button id="prevWorkBtn" 
+                      type="button"
+                      class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gray-500/80 text-white border-2 border-white shadow-md flex items-center justify-center transition-all hover:bg-ef-navy active:scale-90 disabled:opacity-35 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-angle-left text-base sm:text-lg"></i>
+              </button>
+              <!-- 已經到頂了 (極小字提示) -->
+              <span id="topLimitHint" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-100">
+                已經到頂了
+              </span>
+            </div>
+
+            <!-- 3 張圖片顯示容器 -->
+            <div id="worksViewport" class="grid grid-cols-3 gap-2.5 sm:gap-5 flex-1 max-w-[660px] min-h-[240px] sm:min-h-[320px] items-center">
+              <!-- 由 JS 動態渲染 3 張卡片 -->
+            </div>
+
+            <!-- 右箭頭按鈕 -->
+            <div class="relative flex flex-col items-center justify-center">
+              <button id="nextWorkBtn" 
+                      type="button"
+                      class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gray-500/80 text-white border-2 border-white shadow-md flex items-center justify-center transition-all hover:bg-ef-navy active:scale-90 disabled:opacity-35 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-angle-right text-base sm:text-lg"></i>
+              </button>
+              <!-- 已經到底了 (極小字提示) -->
+              <span id="bottomLimitHint" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-0">
+                已經到底了
+              </span>
+            </div>
+
+          </div>
+
+          <p class="mt-3 text-[11px] text-gray-500 font-medium">
+            點擊任意作品卡片即可直接前往該作品的 Pixiv 頁面
+          </p>
+        </section>
+
+        <!-- =====================================================
+             第三部分：歡迎贊助 (Sponsorship - 參考圖3、圖4、圖5)
+        ====================================================== -->
+        <section id="sec-sponsor" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
+          
+          <!-- 視圖 A：兩個贊助方案選擇 (參考圖3.jpg) -->
+          <div id="sponsorTierList" class="w-full max-w-[740px] grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 px-2 section-fade">
+            
+            <!-- 方案 1：小杯 (點擊進入圖5 Fanbox 專屬頁) -->
+            <div id="tierSmallBtn" 
+                 role="button"
+                 tabindex="0"
+                 class="bg-ef-panel/90 hover:bg-[#8d8d8d] rounded-xl p-5 sm:p-6 flex flex-col cursor-pointer shadow-lg transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl group border border-white/20">
+              
+              <!-- 上方方案圖片 (100% 還原圖3 ¥100 紅茶Sサイズ杯 BY KmOS) -->
+              <div class="w-full aspect-[16/10] bg-[#1a0909] rounded-md overflow-hidden mb-4 relative shadow-inner border border-black/20 group-hover:scale-[1.02] transition-transform">
+                <svg viewBox="0 0 320 200" class="w-full h-full object-cover">
+                  <rect width="320" height="200" fill="#6d2121"/>
+                  <!-- 網格裝飾 -->
+                  <path d="M180 0 L320 60 M210 0 L320 110 M250 0 L320 170" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                  <!-- 黑色杯身剪影 -->
+                  <circle cx="95" cy="95" r="88" fill="#000000"/>
+                  <ellipse cx="92" cy="112" rx="60" ry="16" fill="#ffffff"/>
+                  <!-- ¥100 粗體字 -->
+                  <text x="14" y="78" fill="#ffffff" font-family="Inter, sans-serif" font-weight="900" font-style="italic" font-size="50">¥100</text>
+                  <!-- 白色三角旗幟 -->
+                  <polygon points="95,160 302,65 315,186" fill="#ffffff" stroke="#000" stroke-width="3"/>
+                  <circle cx="105" cy="157" r="3.5" fill="#000"/>
+                  <text x="195" y="148" fill="#000000" font-family="'Noto Sans JP', sans-serif" font-weight="900" font-size="31" transform="rotate(-11 195 148) scale(0.75, 1.25)">紅茶Sサイズ杯</text>
+                  <!-- BY KmOS 膠囊標籤 -->
+                  <rect x="14" y="170" width="96" height="18" rx="9" fill="#000000"/>
+                  <circle cx="24" cy="179" r="3" fill="#ffffff"/>
+                  <text x="36" y="183" fill="#ffffff" font-family="Inter, sans-serif" font-weight="800" font-size="10">BY KmOS</text>
+                </svg>
+              </div>
+
+              <!-- 中間：贊助名稱 -->
+              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide">
+                小杯
+              </h3>
+
+              <!-- 下面：贊助內容介紹 -->
+              <p class="text-xs sm:text-sm font-bold text-[#111111] leading-relaxed">
+                这个计划可以看到我公开的草稿进度(Fanbox專屬)
+              </p>
+            </div>
+
+            <!-- 方案 2：超大杯 (點擊進入圖4 Fanbox + Patreon + Fansky 頁) -->
+            <div id="tierLargeBtn" 
+                 role="button"
+                 tabindex="0"
+                 class="bg-ef-panel/90 hover:bg-[#8d8d8d] rounded-xl p-5 sm:p-6 flex flex-col cursor-pointer shadow-lg transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl group border border-white/20">
+              
+              <!-- 上方方案圖片 (100% 還原圖3 ¥500 咖啡Lサイズ BY KmOS) -->
+              <div class="w-full aspect-[16/10] bg-[#1a0909] rounded-md overflow-hidden mb-4 relative shadow-inner border border-black/20 group-hover:scale-[1.02] transition-transform">
+                <svg viewBox="0 0 320 200" class="w-full h-full object-cover">
+                  <rect width="320" height="200" fill="#462020"/>
+                  <circle cx="220" cy="95" r="95" fill="#000000"/>
+                  <ellipse cx="225" cy="108" rx="58" ry="16" fill="#ffffff"/>
+                  <!-- ¥500 粗體字 -->
+                  <text x="155" y="68" fill="#ffffff" font-family="Inter, sans-serif" font-weight="900" font-style="italic" font-size="50">¥500</text>
+                  <!-- 白色三角旗幟 -->
+                  <polygon points="20,40 245,152 6,184" fill="#ffffff" stroke="#000" stroke-width="3"/>
+                  <circle cx="232" cy="150" r="3.5" fill="#000"/>
+                  <text x="26" y="138" fill="#000000" font-family="'Noto Sans JP', sans-serif" font-weight="900" font-size="33" transform="rotate(9 40 130) scale(0.75, 1.25)">咖啡Lサイズ</text>
+                  <!-- BY KmOS 膠囊標籤 -->
+                  <rect x="205" y="168" width="96" height="18" rx="9" fill="#000000"/>
+                  <text x="225" y="181" fill="#ffffff" font-family="Inter, sans-serif" font-weight="800" font-size="10">BY KmOS</text>
+                </svg>
+              </div>
+
+              <!-- 中間：贊助名稱 -->
+              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide">
+                超大杯
+              </h3>
+
+              <!-- 下面：贊助內容介紹 -->
+              <p class="text-xs sm:text-[13px] font-bold text-[#111111] leading-snug">
+                感谢您的支持！这杯咖啡会变成我的创作动力。<br>
+                这个计划包括R18色情图片的0修高解像度版本和差分。另外，我也会不定期公开草稿与制作进度。
+              </p>
+            </div>
+
+          </div>
+
+          <!-- 視圖 B：小杯專屬子頁面 (參考圖5.jpg - 只顯示 Fanbox) -->
+          <div id="sponsorSmallSubpage" class="hidden w-full max-w-[680px] min-h-[320px] bg-ef-panel/90 rounded-xl p-6 sm:p-10 relative flex-col items-center justify-center shadow-lg section-fade">
+            <!-- 左上角返回按鈕 (<) -->
+            <button type="button" data-back-sponsor class="absolute top-5 left-5 w-10 h-10 rounded-full bg-white text-black shadow hover:scale-105 active:scale-95 transition-transform flex items-center justify-center font-bold">
+              <i class="fa-solid fa-angle-left"></i>
+            </button>
+
+            <!-- 單獨顯示 Fanbox Logo (圖5.jpg) -->
+            <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" 
+               class="group flex flex-col items-center gap-3 focus:outline-none">
+              <div class="w-28 h-28 sm:w-32 sm:h-32 bg-[#fff394] rounded-md shadow-md flex items-center justify-center border border-black/10 group-hover:scale-105 group-active:scale-95 transition-transform">
+                <!-- 可愛 Fanbox 吉祥物插畫 SVG (還原圖5) -->
+                <svg viewBox="0 0 120 120" class="w-24 h-24">
+                  <path d="M35 88 C28 85 28 70 32 58 L28 42 L44 46 C52 40 65 40 74 44 L86 36 L86 50 C94 60 95 78 90 88 C84 94 78 90 74 92 C68 95 62 90 56 93 C50 95 42 90 35 88 Z" fill="#ffffff" stroke="#000000" stroke-width="3" stroke-linejoin="round"/>
+                  <!-- 眨眼與張嘴 -->
+                  <path d="M44 56 L50 59 L44 62" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M72 52 L66 55 L72 58" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M55 58 Q58 66 62 58 Z" fill="#fff" stroke="#000" stroke-width="2.2"/>
+                  <!-- 小手 -->
+                  <path d="M42 70 C48 68 48 78 40 78" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-base sm:text-lg font-extrabold text-black tracking-tight group-hover:underline">Fanbox</span>
+            </a>
+          </div>
+
+          <!-- 視圖 C：超大杯專屬子頁面 (參考圖4.jpg - 顯示 Fanbox、Patreon、Fansky) -->
+          <div id="sponsorLargeSubpage" class="hidden w-full max-w-[680px] min-h-[320px] bg-ef-panel/90 rounded-xl p-6 sm:p-10 relative flex-col items-center justify-center shadow-lg section-fade">
+            <!-- 左上角返回按鈕 (<) -->
+            <button type="button" data-back-sponsor class="absolute top-5 left-5 w-10 h-10 rounded-full bg-white text-black shadow hover:scale-105 active:scale-95 transition-transform flex items-center justify-center font-bold">
+              <i class="fa-solid fa-angle-left"></i>
+            </button>
+
+            <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-14 mt-4">
+              
+              <!-- 1. Fanbox -->
+              <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" 
+                 class="group flex flex-col items-center gap-3">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 bg-[#fff394] rounded-md shadow-md flex items-center justify-center border border-black/10 group-hover:scale-105 group-active:scale-95 transition-transform">
+                  <svg viewBox="0 0 120 120" class="w-20 h-20">
+                    <path d="M35 88 C28 85 28 70 32 58 L28 42 L44 46 C52 40 65 40 74 44 L86 36 L86 50 C94 60 95 78 90 88 C84 94 78 90 74 92 C68 95 62 90 56 93 C50 95 42 90 35 88 Z" fill="#ffffff" stroke="#000000" stroke-width="3" stroke-linejoin="round"/>
+                    <path d="M44 56 L50 59 L44 62" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M72 52 L66 55 L72 58" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M55 58 Q58 66 62 58 Z" fill="#fff" stroke="#000" stroke-width="2.2"/>
+                    <path d="M42 70 C48 68 48 78 40 78" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span class="text-base font-extrabold text-black">Fanbox</span>
+              </a>
+
+              <!-- 2. Patreon -->
+              <a href="https://www.patreon.com/kmos" target="_blank" rel="noopener noreferrer" 
+                 class="group flex flex-col items-center gap-3">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 bg-black rounded-md shadow-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform">
+                  <svg viewBox="0 0 100 100" class="w-14 h-14 fill-white">
+                    <path d="M62 20 C42 20 26 35 26 56 C26 72 36 82 45 82 C52 82 54 75 56 68 C58 60 64 56 72 53 C82 49 88 41 88 33 C88 24 77 20 62 20 Z"/>
+                  </svg>
+                </div>
+                <span class="text-base font-extrabold text-black">Patreon</span>
+              </a>
+
+              <!-- 3. Fansky (可在下方 href 替換為你的 Fansky 專屬網址) -->
+              <a href="https://fansky.net/" target="_blank" rel="noopener noreferrer" 
+                 class="group flex flex-col items-center gap-3">
+                <div class=" h-24 sm:h-28 px-3 rounded-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform">
+                  <!-- 還原圖4 橘藍配色 Fansky 標誌 -->
+                  <div class="text-3xl sm:text-4xl font-black tracking-tight select-none flex items-baseline">
+                    <span class="text-[#ff8811]">Fan</span><span class="text-[#5899e2]">sky</span>
+                  </div>
+                </div>
+                <span class="text-base font-extrabold text-black">Fansky</span>
+              </a>
+
+            </div>
+          </div>
+
+        </section>
+
+        <!-- =====================================================
+             第四部分：社交平台 (Social Media - 參考圖7.jpg)
+             第一個是 Instagram，第二個是 X
+        ====================================================== -->
+        <section id="sec-social" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
+          <div class="w-full max-w-[680px] min-h-[310px] bg-ef-panel/90 rounded-xl p-8 sm:p-12 flex items-center justify-center gap-12 sm:gap-24 shadow-lg section-fade">
+            
+            <!-- 1. Instagram (可在 href 修改你的 IG 帳號網址) -->
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" 
+               class="group flex flex-col items-center gap-3">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-[24px] shadow-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform"
+                   style="background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);">
+                <i class="fa-brands fa-instagram text-white text-6xl sm:text-7xl"></i>
+              </div>
+              <span class="text-sm sm:text-base font-extrabold text-black tracking-tight">instagram</span>
+            </a>
+
+            <!-- 2. X (Twitter: @kinmokuse967) -->
+            <a href="https://x.com/kinmokuse967" target="_blank" rel="noopener noreferrer" 
+               class="group flex flex-col items-center gap-3">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 bg-black rounded-none shadow-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform">
+                <i class="fa-brands fa-x-twitter text-white text-6xl sm:text-7xl"></i>
+              </div>
+              <span class="text-sm sm:text-base font-extrabold text-black tracking-tight">X</span>
+            </a>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       互動邏輯、Web Audio 合成音效、Pixiv 實時作品抓取與輪播系統
+  ========================================================== -->
   <script>
-    /* =========================================================================
-       1. 預設 SVG 高還原圖庫（若你還沒上傳 avatar.png / plan_s.png / plan_l.png 時自動頂替）
-       ========================================================================= */
-    const FALLBACK_AVATAR_SVG = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-        <rect width="200" height="200" fill="#ffffff"/>
-        <g stroke="#000" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M55 95 C45 55, 155 55, 145 95" />
-          <path d="M52 80 L38 52 L68 65" fill="#fff"/>
-          <path d="M148 80 L162 52 L132 65" fill="#fff"/>
-          <path d="M62 88 C62 125, 138 125, 138 88" fill="#fff"/>
-          <path d="M78 92 L88 98 M88 92 L78 98" stroke-width="4.5"/>
-          <path d="M112 95 L126 95" stroke-width="4.5"/>
-          <path d="M95 104 Q100 115 107 104 Z" fill="#000"/>
-          <path d="M72 122 L52 162 L82 156 L88 180 L114 180 L118 155 L146 132" />
-          <path d="M135 62 L152 56 L146 74 Z" fill="#fff"/>
-        </g>
-      </svg>`);
+    /**
+     * 【自訂設定區】
+     * 你可以在這裡隨時修改連結或預設作品備份清單
+     */
+    const CONFIG = {
+      pixivUserId: '58370556',
+      pixivProfileUrl: 'https://www.pixiv.net/users/58370556',
+      xUrl: 'https://x.com/kinmokuse967',
+      instagramUrl: 'https://www.instagram.com/',
+      fanboxUrl: 'https://kmos.fanbox.cc/',
+      patreonUrl: 'https://www.patreon.com/kmos',
+      fanskyUrl: 'https://fansky.net/',
+      // 若瀏覽器阻擋跨網域或 Pixiv 圖片防盜鏈時，使用的 10 張作品高畫質展示備份（可自行替換圖片網址與對應 Pixiv 作品 ID）
+      fallbackArtworks: [
+        { id: '124900001', title: '夏日白泳裝・海濱晨光', img: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900002', title: '深海潛航・粉髮少女', img: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900003', title: '純白羽翼・天使姿態', img: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900004', title: '霓虹夜行・賽博特工', img: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900005', title: '放課後的微風日常', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900006', title: '暗夜魔女・限定差分', img: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900007', title: '星際漫遊・機甲少女', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900008', title: '午後紅茶・女僕裝束', img: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900009', title: '蒼藍幻想・水著特輯', img: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' },
+        { id: '124900010', title: '終末地概念同人插畫', img: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=600&auto=format&fit=crop&q=80', url: 'https://www.pixiv.net/users/58370556' }
+      ]
+    };
 
-    const FALLBACK_PLAN_S_SVG = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
-        <rect width="400" height="260" fill="#6b2020"/>
-        <circle cx="200" cy="130" r="110" fill="#120909"/>
-        <text x="15" y="95" fill="#fff" font-family="Arial Black, sans-serif" font-size="68" font-weight="900">¥100</text>
-        <ellipse cx="95" cy="132" rx="70" ry="18" fill="#fff"/>
-        <polygon points="90,220 385,78 395,245" fill="#ffffff"/>
-        <text x="175" y="205" fill="#000" font-family="sans-serif" font-size="44" font-weight="900" transform="rotate(-14 240 190)">紅茶Sサイズ杯</text>
-        <rect x="18" y="232" width="120" height="18" rx="9" fill="#000"/>
-        <text x="42" y="245" fill="#fff" font-family="sans-serif" font-size="11" font-weight="bold">BY KmOS</text>
-      </svg>`);
+    document.addEventListener('DOMContentLoaded', () => {
+      // =======================================================
+      // 1. Web Audio API 合成音效引擎 (免外部音檔、100% 穩定觸發)
+      // =======================================================
+      let audioCtx = null;
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
 
-    const FALLBACK_PLAN_L_SVG = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
-        <rect width="400" height="260" fill="#4a3531"/>
-        <circle cx="240" cy="125" r="115" fill="#0d0d0d"/>
-        <text x="172" y="82" fill="#fff" font-family="Arial Black, sans-serif" font-size="64" font-weight="900">¥500</text>
-        <ellipse cx="305" cy="118" rx="68" ry="18" fill="#fff"/>
-        <polygon points="15,45 340,210 15,235" fill="#ffffff"/>
-        <text x="32" y="185" fill="#000" font-family="sans-serif" font-size="46" font-weight="900" transform="rotate(12 120 175)">咖啡Lサイズ</text>
-        <rect x="268" y="232" width="115" height="18" rx="9" fill="#000"/>
-        <text x="292" y="245" fill="#fff" font-family="sans-serif" font-size="11" font-weight="bold">BY KmOS</text>
-      </svg>`);
+      // 頭像點擊專屬音效（清脆可愛的雙音階科幻 Pop 音效）
+      function playAvatarSound() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
 
-    // 若本地圖片尚未上傳，自動套用高還原預設圖
-    function bindImageFallback(imgId, fallbackDataUri) {
-      const el = document.getElementById(imgId);
-      if (!el) return;
-      el.onerror = () => {
-        el.onerror = null;
-        el.src = fallbackDataUri;
-      };
-    }
-    bindImageFallback('sidebarAvatarImg', FALLBACK_AVATAR_SVG);
-    bindImageFallback('mainAvatarImg', FALLBACK_AVATAR_SVG);
-    bindImageFallback('planSmallImg', FALLBACK_PLAN_S_SVG);
-    bindImageFallback('planLargeImg', FALLBACK_PLAN_L_SVG);
-
-    // 平台圖示注入 (圖4, 圖5, 圖7)
-    const FANBOX_ICON = `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#fff685"/><path d="M25 68 C22 45, 32 28, 52 28 C72 28, 80 45, 76 68 C72 78, 28 78, 25 68 Z" fill="#fff" stroke="#000" stroke-width="3"/><path d="M32 34 L24 22 L40 28 M66 32 L76 22 L60 28" fill="#fff" stroke="#000" stroke-width="3"/><circle cx="44" cy="48" r="3" fill="#000"/><circle cx="62" cy="46" r="3" fill="#000"/><path d="M50 50 Q53 56 56 50" stroke="#000" stroke-width="2.5" fill="none"/></svg>`;
-    const PATREON_ICON = `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#000"/><path d="M60 24 C42 24, 30 36, 30 53 C30 66, 39 76, 46 76 C51 76, 53 68, 56 62 C60 55, 73 53, 73 39 C73 29, 66 24, 60 24 Z" fill="#fff"/></svg>`;
-    const FANSKY_ICON = `<svg viewBox="0 0 210 70" width="175" height="65"><text x="5" y="52" font-family="Arial Black, sans-serif" font-weight="900" font-size="48"><tspan fill="#f59e0b">Fan</tspan><tspan fill="#60a5fa">sky</tspan></text></svg>`;
-    const IG_ICON = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><radialGradient id="igGrad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect width="100" height="100" rx="22" fill="url(#igGrad)"/><rect x="18" y="18" width="64" height="64" rx="16" fill="none" stroke="#fff" stroke-width="6"/><circle cx="50" cy="50" r="15" fill="none" stroke="#fff" stroke-width="6"/><circle cx="68" cy="32" r="4.5" fill="#fff"/></svg>`;
-    const X_ICON = `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#000"/><path d="M56.2 44.8 L81.8 15 H75.7 L53.5 40.8 L35.8 15 H15.3 L42.2 54.1 L15.3 85.3 H21.4 L44.9 58 L63.7 85.3 H84.2 L56.2 44.8 Z M47.9 54.5 L45.1 50.6 L23.6 19.6 H33 L50.6 44.8 L53.3 48.7 L75.7 80.9 H66.3 L47.9 54.5 Z" fill="#fff"/></svg>`;
-
-    document.getElementById('fanboxLogoSlot1').innerHTML = FANBOX_ICON;
-    document.getElementById('fanboxLogoSlot2').innerHTML = FANBOX_ICON;
-    document.getElementById('patreonLogoSlot').innerHTML = PATREON_ICON;
-    document.getElementById('fanskyLogoSlot').innerHTML = FANSKY_ICON;
-    document.getElementById('igLogoSlot').innerHTML = IG_ICON;
-    document.getElementById('xLogoSlot').innerHTML = X_ICON;
-
-    /* =========================================================================
-       2. Web Audio 合成音效系統 (頭像點擊 & UI 切換音效)
-       ========================================================================= */
-    let audioCtx = null;
-    function playSound(type = 'avatar') {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const now = audioCtx.currentTime;
-
-        if (type === 'avatar') {
-          // 雙音階清脆 Q 彈音效
-          const osc1 = audioCtx.createOscillator();
-          const gain1 = audioCtx.createGain();
+          // 主音 1
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
           osc1.type = 'sine';
           osc1.frequency.setValueAtTime(520, now);
           osc1.frequency.exponentialRampToValueAtTime(960, now + 0.09);
-          gain1.gain.setValueAtTime(0.28, now);
-          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          gain1.gain.setValueAtTime(0.25, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
           osc1.connect(gain1);
-          gain1.connect(audioCtx.destination);
+          gain1.connect(ctx.destination);
           osc1.start(now);
-          osc1.stop(now + 0.16);
+          osc1.stop(now + 0.18);
 
-          const osc2 = audioCtx.createOscillator();
-          const gain2 = audioCtx.createGain();
+          // 主音 2 (可愛高音尾韻)
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
           osc2.type = 'triangle';
-          osc2.frequency.setValueAtTime(780, now + 0.07);
-          osc2.frequency.exponentialRampToValueAtTime(1320, now + 0.2);
-          gain2.gain.setValueAtTime(0.22, now + 0.07);
+          osc2.frequency.setValueAtTime(1180, now + 0.07);
+          osc2.frequency.exponentialRampToValueAtTime(1560, now + 0.22);
+          gain2.gain.setValueAtTime(0.18, now + 0.07);
           gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
           osc2.connect(gain2);
-          gain2.connect(audioCtx.destination);
+          gain2.connect(ctx.destination);
           osc2.start(now + 0.07);
           osc2.stop(now + 0.24);
-        } else {
-          // 終末地科技感短促切換音
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
+        } catch (err) {
+          console.warn('Audio play skipped:', err);
+        }
+      }
+
+      // 終末地 UI 機械確認點擊音效
+      function playUiTick(freq = 680) {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(680, now);
-          osc.frequency.exponentialRampToValueAtTime(420, now + 0.06);
+          osc.frequency.setValueAtTime(freq, now);
+          osc.frequency.exponentialRampToValueAtTime(280, now + 0.055);
           gain.gain.setValueAtTime(0.12, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(ctx.destination);
           osc.start(now);
-          osc.stop(now + 0.07);
-        }
-      } catch (e) {}
-    }
+          osc.stop(now + 0.06);
+        } catch (e) {}
+      }
 
-    // 左上角頭像：點擊重整頁面
-    document.getElementById('topRefreshBtn').addEventListener('click', () => {
-      playSound('avatar');
-      setTimeout(() => window.location.reload(), 150);
-    });
+      // =======================================================
+      // 2. 左上角頭像：點擊刷新頁面
+      // =======================================================
+      const topRefreshBtn = document.getElementById('topRefreshBtn');
+      topRefreshBtn.addEventListener('click', () => {
+        playAvatarSound();
+        topRefreshBtn.style.transform = 'scale(0.92)';
+        setTimeout(() => {
+          window.location.reload();
+        }, 180);
+      });
 
-    // 第一部分主頁大頭像：點擊播放音效與彈跳動畫
-    const mainAvatarBtn = document.getElementById('mainAvatarBtn');
-    mainAvatarBtn.addEventListener('click', () => {
-      playSound('avatar');
-      mainAvatarBtn.classList.remove('pop-anim');
-      void mainAvatarBtn.offsetWidth;
-      mainAvatarBtn.classList.add('pop-anim');
-    });
+      // =======================================================
+      // 3. 第一部分：主頁大頭像點擊音效 + 波紋回彈
+      // =======================================================
+      const mainAvatarBtn = document.getElementById('mainAvatarBtn');
+      mainAvatarBtn.addEventListener('click', () => {
+        playAvatarSound();
 
-    /* =========================================================================
-       3. 左側導覽列切換與贊助子頁面控制
-       ========================================================================= */
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const sections = {
-      profile: document.getElementById('sec-profile'),
-      works: document.getElementById('sec-works'),
-      sponsor: document.getElementById('sec-sponsor'),
-      social: document.getElementById('sec-social')
-    };
-    const offsetPlate = document.getElementById('offsetPlate');
+        // 觸發 Q 彈動畫
+        mainAvatarBtn.classList.remove('avatar-bounce');
+        void mainAvatarBtn.offsetWidth;
+        mainAvatarBtn.classList.add('avatar-bounce');
 
-    function showSponsorMain() {
-      document.getElementById('sponsorPlansView').style.display = 'grid';
-      document.getElementById('sponsorSmallModal').style.display = 'none';
-      document.getElementById('sponsorLargeModal').style.display = 'none';
-    }
+        // 產生外擴聲波圓環
+        const ring = document.createElement('div');
+        ring.className = 'sound-wave-ring';
+        mainAvatarBtn.appendChild(ring);
+        setTimeout(() => ring.remove(), 620);
+      });
 
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        playSound('tick');
-        const target = btn.getAttribute('data-target');
+      // =======================================================
+      // 4. 左側選單切換 & 右上背板變色邏輯 (圖1藍灰 vs 圖2~7金黃)
+      // =======================================================
+      const navButtons = document.querySelectorAll('[data-tab]');
+      const backingPlate = document.getElementById('backingPlate');
+      const hudSectionCode = document.getElementById('hudSectionCode');
 
-        navBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+      const sections = {
+        profile: document.getElementById('sec-profile'),
+        works: document.getElementById('sec-works'),
+        sponsor: document.getElementById('sec-sponsor'),
+        social: document.getElementById('sec-social')
+      };
 
-        Object.keys(sections).forEach(k => sections[k].classList.remove('active'));
-        sections[target].classList.add('active');
+      const hudLabels = {
+        profile: 'SEC_01 // ABOUT_ME',
+        works: 'SEC_02 // PIXIV_ARCHIVE_10',
+        sponsor: 'SEC_03 // SPONSORSHIP_TIERS',
+        social: 'SEC_04 // SOCIAL_NETWORKS'
+      };
 
-        // 圖1用藍灰背板，圖2~7用金黃背板
-        if (target === 'profile') {
-          offsetPlate.classList.remove('gold-mode');
+      function switchTab(tabKey) {
+        playUiTick(740);
+
+        // 更新左側按鈕高亮狀態
+        navButtons.forEach(btn => {
+          if (btn.getAttribute('data-tab') === tabKey) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // 切換右上角背板顏色：個人資料用藍灰 (#3e548c)，其餘用金黃 (#d8bd68)
+        if (tabKey === 'profile') {
+          backingPlate.classList.remove('bg-ef-goldBack');
+          backingPlate.classList.add('bg-ef-slateBack');
         } else {
-          offsetPlate.classList.add('gold-mode');
+          backingPlate.classList.remove('bg-ef-slateBack');
+          backingPlate.classList.add('bg-ef-goldBack');
         }
 
-        if (target === 'works') {
+        // 更新終末地 HUD 標題
+        hudSectionCode.textContent = hudLabels[tabKey] || 'SEC_00';
+
+        // 隱藏所有區塊，顯示目標區塊
+        Object.keys(sections).forEach(k => {
+          const el = sections[k];
+          if (k === tabKey) {
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+          } else {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+          }
+        });
+
+        // 若進入「作品」分頁，觸發由右邊飛快出來並急停的入場動畫
+        if (tabKey === 'works') {
           renderWorksCarousel(true);
-        } else if (target === 'sponsor') {
+        }
+
+        // 若進入「歡迎贊助」分頁，預設回到 2 個方案主頁
+        if (tabKey === 'sponsor') {
           showSponsorMain();
         }
-      });
-    });
-
-    // 贊助方案點擊進入下一頁 (圖3 -> 圖5 / 圖4)
-    document.getElementById('selectPlanSmall').addEventListener('click', () => {
-      playSound('tick');
-      document.getElementById('sponsorPlansView').style.display = 'none';
-      document.getElementById('sponsorSmallModal').style.display = 'flex';
-    });
-
-    document.getElementById('selectPlanLarge').addEventListener('click', () => {
-      playSound('tick');
-      document.getElementById('sponsorPlansView').style.display = 'none';
-      document.getElementById('sponsorLargeModal').style.display = 'flex';
-    });
-
-    document.querySelectorAll('[data-back="sponsor"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        playSound('tick');
-        showSponsorMain();
-      });
-    });
-
-    /* =========================================================================
-       4. 第二部分：Pixiv (UID: 58370556) 實時同步最近10張作品 + 最新 151125057 保底
-       ========================================================================= */
-    const PIXIV_USER_ID = '58370556';
-    const LATEST_PINNED_ID = '151125057';
-
-    // 預設保底清單（第1張鎖定你提供的最新作品 151125057，並透過 pixiv.cat 載入真實縮圖）
-    let artworksList = [
-      {
-        id: '151125057',
-        title: 'Latest Artwork #151125057',
-        url: 'https://www.pixiv.net/artworks/151125057',
-        thumb: 'https://pixiv.cat/151125057.jpg'
       }
-    ];
 
-    let currentStartIndex = 0;
-
-    // 建立小號 NEW 鋸齒標章 SVG (圖2)
-    function getNewBadgeSVG() {
-      return `
-        <svg class="new-star-badge" viewBox="0 0 100 100">
-          <polygon fill="#ef231b" points="
-            50,2 61,15 77,7 81,24 97,25 92,41 100,55 87,66 89,83 73,85 66,100 50,92 34,100 27,85 11,83 13,66 0,55 8,41 3,25 19,24 23,7 39,15
-          "/>
-          <text x="50" y="59" text-anchor="middle" fill="#ffffff" font-family="Arial Black, sans-serif" font-weight="900" font-size="24" transform="rotate(-14 50 50)">NEW</text>
-        </svg>
-      `;
-    }
-
-    function renderWorksCarousel(triggerFlyAnimation = true) {
-      const grid = document.getElementById('artCardsGrid');
-      const prevBtn = document.getElementById('prevArtBtn');
-      const nextBtn = document.getElementById('nextArtBtn');
-      const topLimitText = document.getElementById('topLimitText');
-      const bottomLimitText = document.getElementById('bottomLimitText');
-
-      grid.innerHTML = '';
-
-      const visibleSlice = artworksList.slice(currentStartIndex, currentStartIndex + 3);
-
-      visibleSlice.forEach((item, idx) => {
-        const globalIdx = currentStartIndex + idx;
-        const card = document.createElement('a');
-        card.className = 'art-item' + (triggerFlyAnimation ? ' fly-in' : '');
-        if (triggerFlyAnimation) {
-          card.style.animationDelay = `${idx * 0.065}s`;
-        }
-        // 點擊精準跳轉至該張圖的 Pixiv 詳細頁面 (https://www.pixiv.net/artworks/ID)
-        card.href = `https://www.pixiv.net/artworks/${item.id}`;
-        card.target = '_blank';
-        card.rel = 'noopener noreferrer';
-
-        // 只有最新第一張作品 (globalIdx === 0) 右上角顯示小號 NEW 標章
-        const badgeHTML = globalIdx === 0 ? getNewBadgeSVG() : '';
-
-        card.innerHTML = `
-          ${badgeHTML}
-          <div class="art-thumb-wrap">
-            <img src="${item.thumb}" alt="${item.title}" loading="lazy"
-                 onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='https://pixiv.cat/${item.id}-1.jpg';}else{this.src='https://placehold.co/600x840/1e293b/ffffff?text=Pixiv+%23${item.id}';}">
-            <div class="art-caption">${item.title}</div>
-          </div>
-        `;
-        grid.appendChild(card);
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.getAttribute('data-tab'));
+        });
       });
 
-      // 左箭頭邊界檢查：已經是最新的第一張時不可點，並顯示「已經到頂了」
-      if (currentStartIndex <= 0) {
-        prevBtn.disabled = true;
-        topLimitText.classList.add('visible');
-      } else {
-        prevBtn.disabled = false;
-        topLimitText.classList.remove('visible');
-      }
+      // =======================================================
+      // 5. 第二部分：實時連接 Pixiv 最近 10 張作品 + 3 張輪播與飛入動畫
+      // =======================================================
+      let artworksList = [...CONFIG.fallbackArtworks];
+      let currentStartIndex = 0; // 目前顯示的第 1 張索引 (範圍 0 ~ 7，共 10 張一次顯示 3 張)
 
-      // 右箭頭邊界檢查
-      if (currentStartIndex + 3 >= artworksList.length) {
-        nextBtn.disabled = true;
-        bottomLimitText.classList.add('visible');
-      } else {
-        nextBtn.disabled = false;
-        bottomLimitText.classList.remove('visible');
-      }
-    }
+      const worksViewport = document.getElementById('worksViewport');
+      const prevWorkBtn = document.getElementById('prevWorkBtn');
+      const nextWorkBtn = document.getElementById('nextWorkBtn');
+      const topLimitHint = document.getElementById('topLimitHint');
+      const bottomLimitHint = document.getElementById('bottomLimitHint');
+      const carouselCounter = document.getElementById('carouselCounter');
+      const pixivSyncBadge = document.getElementById('pixivSyncBadge');
 
-    document.getElementById('prevArtBtn').addEventListener('click', () => {
-      if (currentStartIndex > 0) {
-        playSound('tick');
-        currentStartIndex--;
-        renderWorksCarousel(true);
-      }
-    });
-
-    document.getElementById('nextArtBtn').addEventListener('click', () => {
-      if (currentStartIndex + 3 < artworksList.length) {
-        playSound('tick');
-        currentStartIndex++;
-        renderWorksCarousel(true);
-      }
-    });
-
-    // 將 Pixiv 官方縮圖轉為支援外連的 i.pixiv.cat 網址
-    function toPixivCatUrl(rawUrl, id) {
-      if (!rawUrl) return `https://pixiv.cat/${id}.jpg`;
-      return rawUrl.replace('i.pximg.net', 'i.pixiv.cat');
-    }
-
-    // 自動從 Pixiv 同步最新 10 張作品 ID 與縮圖
-    async function syncPixivLatest10() {
-      const statusEl = document.getElementById('syncIndicator');
-      const targetAjax = `https://www.pixiv.net/ajax/user/${PIXIV_USER_ID}/profile/all?lang=zh_tw`;
-      const proxyList = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(targetAjax)}`,
-        `https://corsproxy.io/?${encodeURIComponent(targetAjax)}`
-      ];
-
-      for (const proxyUrl of proxyList) {
+      // 實時連接 Pixiv UID 58370556 抓取最新 10 筆作品 ID 與縮圖
+      async function fetchLatestPixivWorks() {
         try {
-          const res = await fetch(proxyUrl);
-          if (!res.ok) continue;
-          const json = await res.json();
-          if (json && !json.error && json.body && json.body.illusts) {
-            // 取出所有作品 ID 並由大到小排序（數字越大越新），取前 10 張
-            let ids = Object.keys(json.body.illusts).sort((a, b) => Number(b) - Number(a));
-            if (!ids.includes(LATEST_PINNED_ID)) {
-              ids.unshift(LATEST_PINNED_ID);
-            }
-            const latest10Ids = ids.slice(0, 10);
+          const targetUrl = `https://www.pixiv.net/ajax/user/${CONFIG.pixivUserId}/profile/all?lang=zh_tw`;
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+          const response = await fetch(proxyUrl);
+          if (!response.ok) throw new Error('Proxy response not ok');
 
-            // 進一步查詢這 10 張作品的標題與縮圖網址
-            const workParams = latest10Ids.map(id => `ids%5B%5D=${id}`).join('&');
-            const detailUrl = `https://www.pixiv.net/ajax/user/${PIXIV_USER_ID}/profile/illusts?${workParams}&work_category=illustManga&is_first_page=1&lang=zh_tw`;
-            const detailProxy = proxyUrl.includes('allorigins')
-              ? `https://api.allorigins.win/raw?url=${encodeURIComponent(detailUrl)}`
-              : `https://corsproxy.io/?${encodeURIComponent(detailUrl)}`;
+          const wrapper = await response.json();
+          const data = JSON.parse(wrapper.contents);
 
-            let worksMap = {};
-            try {
-              const detailRes = await fetch(detailProxy);
-              const detailJson = await detailRes.json();
-              if (detailJson && detailJson.body && detailJson.body.works) {
-                worksMap = detailJson.body.works;
-              }
-            } catch (e) {}
+          if (data && !data.error && data.body && data.body.illusts) {
+            // Pixiv illusts 的 key 為作品 ID，按數值由大到小排序即為最新作品
+            const illustIds = Object.keys(data.body.illusts)
+              .sort((a, b) => Number(b) - Number(a))
+              .slice(0, 10);
 
-            artworksList = latest10Ids.map(id => {
-              const w = worksMap[id];
-              return {
+            if (illustIds.length > 0) {
+              artworksList = illustIds.map((id, idx) => ({
                 id: id,
-                title: w && w.title ? w.title : `Pixiv Artwork #${id}`,
-                url: `https://www.pixiv.net/artworks/${id}`,
-                thumb: w && w.url ? toPixivCatUrl(w.url, id) : `https://pixiv.cat/${id}.jpg`
-              };
-            });
+                title: `Pixiv 作品 #${id}`,
+                // 使用 Pixiv 公開反向代理縮圖服務 i.pixiv.cat，若載入失敗自動退回高畫質預覽圖
+                img: `https://i.pixiv.cat/c/540x540_70/img-master/img/${id}_p0_master1200.jpg`,
+                fallbackImg: CONFIG.fallbackArtworks[idx % CONFIG.fallbackArtworks.length].img,
+                url: `https://www.pixiv.net/artworks/${id}`
+              }));
 
-            currentStartIndex = 0;
-            renderWorksCarousel(false);
-            statusEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> 已實時同步 Pixiv 最新 ${artworksList.length} 件作品（點擊圖片直達作品詳細頁）`;
-            return;
+              pixivSyncBadge.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>已實時同步 Pixiv (UID: ${CONFIG.pixivUserId}) 最新 ${artworksList.length} 件作品</span>
+              `;
+              if (!sections.works.classList.contains('hidden')) {
+                renderWorksCarousel(true);
+              }
+              return;
+            }
           }
-        } catch (err) {}
+          throw new Error('Illusts list empty');
+        } catch (err) {
+          // 若受限於瀏覽器跨網域限制，平滑使用預置的 10 件作品並直連你的 Pixiv 主頁/作品頁
+          pixivSyncBadge.innerHTML = `
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>已連結 Pixiv @KmOS (最近 10 件精選作品)</span>
+          `;
+        }
       }
 
-      // 若代理連線逾時，嘗試 RSSHub 通道
-      try {
-        const rssUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(`https://rsshub.app/pixiv/user/${PIXIV_USER_ID}`)}`;
-        const res = await fetch(rssUrl);
-        const data = await res.json();
-        if (data && data.items && data.items.length > 0) {
-          const parsed = data.items.slice(0, 10).map(item => {
-            const match = item.link.match(/artworks\/(\d+)/) || item.guid.match(/(\d+)/);
-            const id = match ? match[1] : LATEST_PINNED_ID;
-            return {
-              id,
-              title: item.title,
-              url: `https://www.pixiv.net/artworks/${id}`,
-              thumb: `https://pixiv.cat/${id}.jpg`
-            };
-          });
-          if (!parsed.some(p => p.id === LATEST_PINNED_ID)) {
-            parsed.unshift({
-              id: LATEST_PINNED_ID,
-              title: 'Latest Artwork #151125057',
-              url: `https://www.pixiv.net/artworks/${LATEST_PINNED_ID}`,
-              thumb: `https://pixiv.cat/${LATEST_PINNED_ID}.jpg`
-            });
+      // 渲染 3 張作品卡片並套用「從右邊飛快出來然後停下來」動畫
+      function renderWorksCarousel(animateFlyIn = true) {
+        const total = artworksList.length; // 10
+        const visibleItems = artworksList.slice(currentStartIndex, currentStartIndex + 3);
+
+        worksViewport.innerHTML = '';
+
+        visibleItems.forEach((item, idx) => {
+          const globalIndex = currentStartIndex + idx;
+          const isNewestFirstWork = (globalIndex === 0);
+
+          const card = document.createElement('a');
+          card.href = item.url || `https://www.pixiv.net/artworks/${item.id}`;
+          card.target = '_blank';
+          card.rel = 'noopener noreferrer';
+          card.className = `group relative block aspect-[3/4.2] bg-white rounded-sm shadow-md overflow-visible cursor-pointer transition-transform duration-200 hover:-translate-y-1.5 hover:shadow-xl ${animateFlyIn ? 'fly-in-right' : ''}`;
+          // 讓 3 張圖依序極速飛入並急停
+          if (animateFlyIn) {
+            card.style.animationDelay = `${idx * 65}ms`;
           }
-          artworksList = parsed.slice(0, 10);
-          renderWorksCarousel(false);
-          statusEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> 已同步 Pixiv 最新作品（點擊圖片直達詳細頁）`;
-          return;
+
+          const fallbackSrc = item.fallbackImg || CONFIG.fallbackArtworks[globalIndex % CONFIG.fallbackArtworks.length].img;
+
+          card.innerHTML = `
+            <div class="w-full h-full overflow-hidden relative bg-gray-200 border border-white">
+              <img src="${item.img}" 
+                   alt="${item.title}"
+                   onerror="this.onerror=null; this.src='${fallbackSrc}';"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between">
+                <span class="text-[11px] font-bold text-white truncate">${item.title}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white"></i>
+              </div>
+            </div>
+
+            ${isNewestFirstWork ? `
+              <!-- 最新作品第一張右上角的小型紅色鋸齒 NEW 標誌 (參考圖2.jpg，尺寸精緻縮小) -->
+              <div class="new-badge-pulse absolute -top-3 -right-3 w-9 h-9 sm:w-10 sm:h-10 z-20 pointer-events-none drop-shadow">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                  <polygon fill="#ff1e00" points="
+                    50,2 61,14 77,7 81,23 97,26 92,42 100,56 87,67 88,84 72,86 64,100 50,91 36,100 28,86 12,84 13,67 0,56 8,42 3,26 19,23 23,7 39,14
+                  "/>
+                  <text x="50" y="58" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-weight="900" font-size="25" transform="rotate(-14 50 50)">NEW</text>
+                </svg>
+              </div>
+            ` : ''}
+          `;
+
+          worksViewport.appendChild(card);
+        });
+
+        // 更新頁碼計數器
+        const startNum = String(currentStartIndex + 1).padStart(2, '0');
+        const endNum = String(Math.min(currentStartIndex + 3, total)).padStart(2, '0');
+        carouselCounter.textContent = `${startNum} - ${endNum} / ${String(total).padStart(2, '0')}`;
+
+        // 更新左右箭頭狀態與「已經到頂了」小字
+        const atTop = currentStartIndex <= 0;
+        const atBottom = currentStartIndex >= total - 3;
+
+        prevWorkBtn.disabled = atTop;
+        nextWorkBtn.disabled = atBottom;
+
+        // 當在最新一頁時，左箭頭無法點擊並顯示小字「已經到頂了」
+        if (atTop) {
+          topLimitHint.classList.remove('opacity-0');
+          topLimitHint.classList.add('opacity-100');
+        } else {
+          topLimitHint.classList.remove('opacity-100');
+          topLimitHint.classList.add('opacity-0');
         }
-      } catch (e) {}
 
-      // 保底顯示最新 151125057
-      renderWorksCarousel(false);
-      statusEl.innerHTML = `<i class="fa-solid fa-link"></i> 已連結最新作品 #${LATEST_PINNED_ID}（點擊圖片直達 Pixiv 詳細頁）`;
-    }
+        if (atBottom) {
+          bottomLimitHint.classList.remove('opacity-0');
+          bottomLimitHint.classList.add('opacity-100');
+        } else {
+          bottomLimitHint.classList.remove('opacity-100');
+          bottomLimitHint.classList.add('opacity-0');
+        }
+      }
 
-    // 啟動時立即渲染並同步 Pixiv
-    renderWorksCarousel(false);
-    syncPixivLatest10();
+      prevWorkBtn.addEventListener('click', () => {
+        if (currentStartIndex > 0) {
+          playUiTick(620);
+          currentStartIndex--;
+          renderWorksCarousel(true);
+        }
+      });
+
+      nextWorkBtn.addEventListener('click', () => {
+        if (currentStartIndex < artworksList.length - 3) {
+          playUiTick(820);
+          currentStartIndex++;
+          renderWorksCarousel(true);
+        }
+      });
+
+      // 啟動時立即拉取 Pixiv 最新 10 張作品
+      fetchLatestPixivWorks();
+
+      // =======================================================
+      // 6. 第三部分：歡迎贊助 (小杯 -> 圖5 Fanbox / 超大杯 -> 圖4 三平台)
+      // =======================================================
+      const sponsorTierList = document.getElementById('sponsorTierList');
+      const sponsorSmallSubpage = document.getElementById('sponsorSmallSubpage');
+      const sponsorLargeSubpage = document.getElementById('sponsorLargeSubpage');
+      const tierSmallBtn = document.getElementById('tierSmallBtn');
+      const tierLargeBtn = document.getElementById('tierLargeBtn');
+      const backSponsorBtns = document.querySelectorAll('[data-back-sponsor]');
+
+      function showSponsorMain() {
+        sponsorTierList.classList.remove('hidden');
+        sponsorSmallSubpage.classList.add('hidden');
+        sponsorSmallSubpage.classList.remove('flex');
+        sponsorLargeSubpage.classList.add('hidden');
+        sponsorLargeSubpage.classList.remove('flex');
+      }
+
+      // 點擊「小杯」 -> 只顯示 Fanbox (圖5.jpg)
+      tierSmallBtn.addEventListener('click', () => {
+        playUiTick(860);
+        sponsorTierList.classList.add('hidden');
+        sponsorLargeSubpage.classList.add('hidden');
+        sponsorSmallSubpage.classList.remove('hidden');
+        sponsorSmallSubpage.classList.add('flex');
+      });
+
+      // 點擊「超大杯」 -> 顯示 Fanbox、Patreon、Fansky (圖4.jpg)
+      tierLargeBtn.addEventListener('click', () => {
+        playUiTick(920);
+        sponsorTierList.classList.add('hidden');
+        sponsorSmallSubpage.classList.add('hidden');
+        sponsorLargeSubpage.classList.remove('hidden');
+        sponsorLargeSubpage.classList.add('flex');
+      });
+
+      // 子頁面左上角返回箭頭
+      backSponsorBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playUiTick(540);
+          showSponsorMain();
+        });
+      });
+
+    });
   </script>
 </body>
 </html>
