@@ -9,7 +9,7 @@
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Tailwind CSS -->
@@ -19,7 +19,7 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Inter"', '"Noto Sans TC"', '"Noto Sans SC"', 'sans-serif'],
+            sans: ['"Inter"', '"Noto Sans TC"', '"Noto Sans SC"', '"Noto Sans JP"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
@@ -49,14 +49,61 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.45s ease;
     }
 
-    /* 終末地風格微網格背景 */
+    /* 終末地風格微網格背景 (預設白底黑線) */
     .ef-grid-bg {
       background-image: 
-        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
       background-size: 28px 28px;
+    }
+
+    /* ================= R18 專屬暗黑粉紫主題 ================= */
+    body.r18-mode {
+      background-color: #070709;
+      color: #f3f4f6;
+    }
+    body.r18-mode.ef-grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    }
+    body.r18-mode #mainNavyFrame {
+      background-color: #ec4899 !important; /* 藍色色塊變成粉色 */
+      box-shadow: 0 25px 50px -12px rgba(236, 72, 153, 0.35);
+    }
+    body.r18-mode #backingPlate {
+      background-color: #9333ea !important; /* 黃色色塊變成紫色 */
+    }
+    body.r18-mode aside {
+      color: #f3f4f6;
+    }
+    body.r18-mode .sidebar-brand-text {
+      color: #ffffff !important;
+    }
+    body.r18-mode .ef-nav-btn {
+      color: #d1d5db;
+    }
+    body.r18-mode .ef-nav-btn.active {
+      background-color: #27272a;
+      color: #f472b6;
+      box-shadow: inset 0 0 0 1px rgba(236, 72, 153, 0.4);
+    }
+    body.r18-mode .ef-nav-btn::before {
+      background-color: #ec4899;
+    }
+    body.r18-mode .ef-nav-btn:hover:not(.active) {
+      background-color: #18181b;
+      color: #ffffff;
+    }
+    body.r18-mode .social-link-item {
+      color: #d1d5db;
+    }
+    body.r18-mode .social-link-item:hover {
+      background-color: #1f2937;
+      color: #f472b6;
     }
 
     /* 終末地工業切角導航按鈕 */
@@ -91,9 +138,66 @@
       transform: translateX(3px);
     }
 
-    /* 右側背板顏色平滑切換 */
-    .backing-plate {
-      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    /* 右上角語言按鈕 (還原未命名設計：左上金黃色塊、右下深藍色塊) */
+    .lang-pill {
+      position: relative;
+      background: #ffffff;
+      color: #000000;
+      border: 1.5px solid #1f2937;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: -3px -3px 0px #d8bd68, 4px 4px 0px #061547;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .lang-pill:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: -4px -4px 0px #d8bd68, 5px 5px 0px #061547;
+    }
+    .lang-pill:active, .lang-pill.active {
+      background: #061547;
+      color: #ffffff;
+      box-shadow: -3px -3px 0px #d8bd68, 2px 2px 0px #3e548c;
+    }
+    body.r18-mode .lang-pill.active {
+      background: #ec4899;
+      border-color: #ec4899;
+      box-shadow: -3px -3px 0px #9333ea, 3px 3px 0px #fbcfe8;
+    }
+
+    /* 作品分類按鈕 (參考圖5：Blue Archive / 絕區零 / R18) */
+    .work-cat-btn {
+      background: rgba(255, 255, 255, 0.85);
+      color: #1f2937;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .work-cat-btn:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+    .work-cat-btn.active {
+      background: #ffffff;
+      color: #000000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      border-color: #061547;
+    }
+    .work-cat-btn.r18-cat.active {
+      background: #ec4899;
+      color: #ffffff;
+      border-color: #9333ea;
+    }
+
+    /* 右側背板與主框平滑切換 */
+    .backing-plate, #mainNavyFrame {
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
     }
     .profile-backing {
       background-color: #d8bd68;
@@ -134,14 +238,8 @@
       animation: sectionAppear 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes sectionAppear {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* NEW 鋸齒星章微呼吸動畫 */
@@ -163,13 +261,83 @@
       pointer-events: none;
       animation: waveOut 0.6s ease-out forwards;
     }
+    body.r18-mode .sound-wave-ring {
+      border-color: #ec4899;
+    }
     @keyframes waveOut {
       0% { transform: scale(0.92); opacity: 0.75; }
       100% { transform: scale(1.28); opacity: 0; }
     }
+
+    /* ================= 開場加載動畫與三色塊左至右滑過 ================= */
+    .loader-avatar-jump {
+      animation: loaderJump 0.45s infinite alternate cubic-bezier(0.25, 0.85, 0.35, 1);
+    }
+    @keyframes loaderJump {
+      0% { transform: translateY(0) scale(1.04, 0.96); }
+      100% { transform: translateY(-26px) scale(0.97, 1.03); }
+    }
+
+    .color-wipe-bar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      transform: translateX(-102%);
+      pointer-events: none;
+      z-index: 100;
+    }
+    .wipe-active {
+      animation: wipeLeftToRight 0.95s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+    @keyframes wipeLeftToRight {
+      0% { transform: translateX(-102%); }
+      45%, 55% { transform: translateX(0%); }
+      100% { transform: translateX(102%); }
+    }
   </style>
 </head>
-<body class="ef-grid-bg min-h-screen flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-10 gap-6 lg:gap-10">
+<body class="ef-grid-bg min-h-screen flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-10 gap-6 lg:gap-10 relative">
+
+  <!-- =========================================================
+       0. 開場加載畫面 (Loading Screen) + 藍/黃/青藍三色塊轉場
+  ========================================================== -->
+  <div id="loadingOverlay" class="fixed inset-0 z-[90] bg-white flex flex-col items-center justify-center transition-opacity duration-300">
+    <div class="relative flex flex-col items-center">
+      <!-- 跳動中的 avatar1.png -->
+      <div id="loaderAvatarBox" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-[4px] border-black bg-white flex items-center justify-center shadow-xl overflow-hidden loader-avatar-jump">
+        <img src="avatar1.png" alt="Loading Avatar" class="w-24 h-24 sm:w-32 sm:h-32 object-contain">
+      </div>
+      <!-- 底部陰影隨跳動縮放 -->
+      <div class="w-16 h-2.5 bg-black/15 rounded-full mt-2 animate-pulse"></div>
+
+      <!-- 加載進度條 -->
+      <div class="w-60 sm:w-72 h-3 bg-gray-200 rounded-full overflow-hidden border border-black/20 mt-6 p-0.5">
+        <div id="loadingBarFill" class="h-full bg-[#061547] rounded-full transition-all duration-75" style="width: 1%;"></div>
+      </div>
+
+      <!-- now loading 1/100% 格式 -->
+      <p id="loadingCounterText" class="mt-2.5 font-mono text-xs sm:text-sm font-bold tracking-wider text-black lowercase">
+        now loading 1/100%
+      </p>
+    </div>
+  </div>
+
+  <!-- 三色塊滑動轉場 (藍色 -> 黃色 -> 青藍色 從左滑到右) -->
+  <div id="wipeBlue" class="color-wipe-bar bg-[#1d4ed8]"></div>
+  <div id="wipeYellow" class="color-wipe-bar bg-[#eab308]"></div>
+  <div id="wipeCyan" class="color-wipe-bar bg-[#06b6d4]"></div>
+
+  <!-- =========================================================
+       右上角：4 國語言切換按鈕 (參考未命名設計)
+  ========================================================== -->
+  <div class="w-full lg:w-auto lg:fixed lg:top-5 lg:right-10 z-30 flex flex-wrap items-center justify-center lg:justify-end gap-2.5 mb-2 lg:mb-0">
+    <button type="button" data-lang="zh-Hant" class="lang-pill active">繁體中文</button>
+    <button type="button" data-lang="zh-Hans" class="lang-pill">简体中文</button>
+    <button type="button" data-lang="en" class="lang-pill">English</button>
+    <button type="button" data-lang="ja" class="lang-pill">日本語</button>
+  </div>
 
   <!-- =========================================================
        左半部：白色終末地風格側邊欄 (Left Sidebar)
@@ -177,44 +345,46 @@
   <aside class="w-full lg:w-64 xl:w-72 flex flex-col justify-between self-stretch bg-white/95 lg:bg-transparent rounded-2xl p-4 lg:p-2 z-20">
     <div>
       <!-- 最左上角：頭像 + KMOS (點擊重新刷新頁面) -->
-      <div class="flex flex-col items-start mb-8 lg:mb-14">
+      <div class="flex flex-col items-start mb-8 lg:mb-12">
         <button id="topRefreshBtn" 
                 type="button"
                 title="點擊重新整理頁面 (Reload Terminal)"
                 class="group flex items-center gap-3.5 text-left focus:outline-none p-1.5 -ml-1.5 rounded-xl hover:bg-gray-100/80 transition-all active:scale-95">
-          <!-- 左上角 avatar -->
           <div class="w-12 h-12 rounded-full border-2 border-black flex items-center justify-center bg-white shadow-sm group-hover:rotate-12 transition-transform overflow-hidden relative">
             <img src="avatar1.png" alt="KmOS avatar" class="w-full h-full object-cover">
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="text-2xl font-black tracking-tight text-black">KMOS</span>
+              <span class="sidebar-brand-text text-2xl font-black tracking-tight text-black">KMOS</span>
               <span class="text-[10px] font-mono bg-black text-white px-1 py-0.5 rounded leading-none opacity-80 group-hover:bg-ef-navy transition-colors">RELOAD</span>
             </div>
             <p class="text-[10px] font-mono text-gray-400 tracking-widest uppercase">// SYS.PORTAL.01</p>
           </div>
         </button>
-        <!-- 設計圖左上角灰塊裝飾 -->
         <div class="w-5 h-4 bg-gray-100 rounded ml-9 mt-1 hidden lg:block"></div>
       </div>
 
-      <!-- 左側導航選單 (4 大選項) -->
+      <!-- 左側導航選單 (4 大選項：個人資料 / 作品 / 歡迎贊助 / 委託我) -->
       <nav class="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-col gap-2.5" aria-label="Main Navigation">
         <button type="button" data-tab="profile" class="ef-nav-btn active py-3.5 px-5 text-left text-sm sm:text-base text-gray-800 flex items-center justify-between group">
-          <span>個人資料</span>
+          <span data-i18n="nav_profile">個人資料</span>
           <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">01</span>
         </button>
 
         <button type="button" data-tab="works" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
-          <span>作品</span>
+          <span data-i18n="nav_works">作品</span>
           <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">02</span>
         </button>
 
         <button type="button" data-tab="sponsor" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
-          <span>歡迎贊助</span>
+          <span data-i18n="nav_sponsor">歡迎贊助</span>
           <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">03</span>
         </button>
 
+        <button type="button" data-tab="commission" class="ef-nav-btn py-3.5 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
+          <span data-i18n="nav_commission">委託我</span>
+          <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">04</span>
+        </button>
       </nav>
 
       <!-- 左側社交平台連結 -->
@@ -224,17 +394,17 @@
         </div>
         <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
           <a href="https://www.instagram.com/kmos_wakuseipinboru/" target="_blank" rel="noopener noreferrer"
-             class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
+             class="social-link-item flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
             <i class="fa-brands fa-instagram w-5 text-center text-lg"></i>
             <span>Instagram</span>
           </a>
           <a href="https://x.com/kinmokusei967" target="_blank" rel="noopener noreferrer"
-             class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
+             class="social-link-item flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
             <i class="fa-brands fa-x-twitter w-5 text-center text-lg"></i>
             <span>X</span>
           </a>
           <a href="https://discord.gg/M7u3CTHnp" target="_blank" rel="noopener noreferrer"
-             class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
+             class="social-link-item flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-black">
             <i class="fa-brands fa-discord w-5 text-center text-lg"></i>
             <span>Discord</span>
           </a>
@@ -246,9 +416,9 @@
     <div class="hidden lg:flex flex-col gap-1 pt-8 border-t border-gray-200/80 text-[11px] font-mono text-gray-400">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-gray-600 font-bold">PIXIV SYNC: UID 58370556</span>
+        <span class="text-gray-500 font-bold">PIXIV SYNC: UID 58370556</span>
       </div>
-      <div> kinmokusei0967@gmail.com// VER 777.0</div>
+      <div>kinmokusei0967@gmail.com // VER 777.0</div>
     </div>
   </aside>
 
@@ -257,23 +427,22 @@
   ========================================================== -->
   <div class="relative w-full max-w-[980px] flex-1 my-2 lg:my-6">
     
-    <!-- 右上偏移背板：主頁與其他頁面皆使用作品頁的金黃色背板 -->
+    <!-- 右上偏移背板 (預設金黃 #d8bd68，R18 模式自動變為紫色) -->
     <div id="backingPlate" 
          class="backing-plate profile-backing absolute -top-4 sm:-top-7 left-5 sm:left-8 -right-3 sm:-right-7 bottom-4 sm:bottom-7 z-0 pointer-events-none shadow-md">
-      <!-- 終末地工業邊角刻度裝飾 -->
-      <div class="absolute top-2 right-3 text-[10px] font-mono text-black/30 tracking-widest uppercase">
+      <div class="absolute top-2 right-3 text-[10px] font-mono text-black/40 tracking-widest uppercase">
         // KMOS.TERMINAL.STAGE
       </div>
     </div>
 
-    <!-- 深藍色粗外框 (#061547) -->
-    <div class="relative z-10 bg-ef-navy p-5 sm:p-9 md:p-12 shadow-2xl">
+    <!-- 深藍色粗外框 (#061547，R18 模式自動變為粉色) -->
+    <div id="mainNavyFrame" class="relative z-10 bg-ef-navy p-5 sm:p-9 md:p-12 shadow-2xl">
       
       <!-- 終末地頂部裝飾條 -->
-      <div class="flex items-center justify-between text-[10px] font-mono text-white/50 mb-2 px-1">
+      <div class="flex items-center justify-between text-[10px] font-mono text-white/70 mb-2 px-1">
         <span id="hudSectionCode">SEC_01 // ABOUT_ME</span>
         <span class="flex items-center gap-2">
-          <span class="inline-block w-8 h-[2px] bg-white/30"></span>
+          <span class="inline-block w-8 h-[2px] bg-white/40"></span>
           <span>AUDIO: <strong id="audioStateLabel" class="text-emerald-400">READY</strong></span>
         </span>
       </div>
@@ -281,14 +450,14 @@
       <!-- 內部淺灰主畫布 (#e6e6e6) -->
       <div class="relative bg-ef-canvas rounded-lg min-h-[430px] sm:min-h-[490px] w-full overflow-hidden flex items-center justify-center p-5 sm:p-10 shadow-inner">
         
-        <!-- 背景浮水印 1：左下角巨大斜體 KMOS 字樣 (完全還原圖1~圖7) -->
+        <!-- 背景浮水印 1：左下角巨大斜體 KMOS 字樣 -->
         <div class="absolute -bottom-10 -left-8 pointer-events-none select-none z-0 overflow-hidden">
           <div class="text-[115px] sm:text-[175px] font-black text-[#bebebe] tracking-tighter leading-none origin-bottom-left rotate-[28deg] opacity-85" style="font-family: 'Inter', sans-serif;">
             KMOS
           </div>
         </div>
 
-        <!-- 背景浮水印 2：右上角白色幾何交錯圓環 (完全還原圖1~圖7) -->
+        <!-- 背景浮水印 2：右上角白色幾何交錯圓環 -->
         <svg class="absolute -top-12 -right-12 w-72 h-72 sm:w-96 sm:h-96 pointer-events-none z-0" viewBox="0 0 300 300" fill="none">
           <circle cx="220" cy="75" r="105" stroke="#ffffff" stroke-width="2.5" opacity="0.9"/>
           <circle cx="155" cy="145" r="65" stroke="#ffffff" stroke-width="2" opacity="0.85"/>
@@ -296,7 +465,7 @@
         </svg>
 
         <!-- =====================================================
-             第一部分：個人資料 (Main Page / About Me - 參考圖1)
+             第一部分：個人資料 (Main Page / About Me)
         ====================================================== -->
         <section id="sec-profile" class="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 px-2 sm:px-6 section-fade">
           
@@ -306,14 +475,12 @@
                     type="button"
                     title="點擊播放音效！"
                     class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer focus:outline-none group transition-transform">
-              <!-- 外層雙黑框線 -->
               <div class="absolute inset-0 rounded-full border-[5px] border-black"></div>
               <div class="absolute inset-[9px] rounded-full border-[4px] border-black"></div>
-
               <img src="avatar1.png" alt="KmOS avatar" class="w-40 h-40 sm:w-48 sm:h-48 object-contain relative z-10">
             </button>
             <span class="mt-2.5 text-[11px] font-mono text-gray-600 bg-white/70 px-2.5 py-0.5 rounded-full border border-black/10">
-              <i class="fa-solid fa-volume-high mr-1 text-ef-navy"></i>點擊頭像播放音效
+              <i class="fa-solid fa-volume-high mr-1 text-ef-navy"></i><span data-i18n="click_sound_hint">點擊頭像播放音效</span>
             </span>
           </div>
 
@@ -322,15 +489,15 @@
             <div class="inline-block text-[10px] font-mono uppercase tracking-widest bg-ef-navy text-white px-2 py-0.5 rounded mb-2">
               CREATOR PROFILE // KMOS
             </div>
-            <h1 class="text-3xl sm:text-4xl font-black text-black tracking-tight mb-4">
+            <h1 class="text-3xl sm:text-4xl font-black text-black tracking-tight mb-4" data-i18n="about_title">
               About me
             </h1>
             <div class="space-y-3 text-gray-800 text-sm sm:text-base leading-relaxed font-medium bg-white/55 backdrop-blur-sm p-4 sm:p-5 rounded-xl border border-white/80 shadow-sm">
-              <p>
+              <p data-i18n="about_p1">
                 你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>
                 專注於二次元角色插畫、原創與二創同人繪製。
               </p>
-              <p class="text-xs sm:text-sm text-gray-600">
+              <p class="text-xs sm:text-sm text-gray-600" data-i18n="about_p2">
                 平時會在 <strong>Pixiv</strong> 與 <strong>X (Twitter)</strong> 分享最新插畫作品；高畫質原圖、未公開草稿進度與限定差分則會定期更新於 <strong>FANBOX / Patreon / Fansky</strong>，歡迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！
               </p>
             </div>
@@ -339,20 +506,29 @@
         </section>
 
         <!-- =====================================================
-             第二部分：作品列表 (Artworks - 參考圖2)
-             實時連接 Pixiv (UID: 58370556) 最近 10 張作品，一次顯示 3 張
+             第二部分：作品列表 (Blue Archive / 絕區零 / R18)
         ====================================================== -->
         <section id="sec-works" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
           
-          <!-- 頂部狀態與極小提示字顯示區 -->
-          <div class="w-full flex items-center justify-between mb-3 px-2 sm:px-8">
-            <div class="flex items-center gap-2">
-              <span id="pixivSyncBadge" class="inline-flex items-center gap-1.5 text-[11px] font-mono bg-white/80 text-gray-700 px-2.5 py-1 rounded-md border border-black/10">
+          <!-- 頂部作品分類按鈕列 (參考圖5：Blue Archive / 絕區零 / R18 + 計數器) -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 px-2 sm:px-8">
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- 1. Blue Archive -->
+              <button type="button" data-work-cat="ba" class="work-cat-btn active inline-flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Blue Archive // 作品列表</span>
-              </span>
+                <span data-i18n="cat_ba">Blue Archive // 作品列表</span>
+              </button>
+              <!-- 2. 絕區零 -->
+              <button type="button" data-work-cat="zzz" class="work-cat-btn inline-flex items-center gap-1.5">
+                <span data-i18n="cat_zzz">絕區零</span>
+              </button>
+              <!-- 3. R18 (點擊切換粉紫暗黑主題) -->
+              <button type="button" data-work-cat="r18" class="work-cat-btn r18-cat inline-flex items-center gap-1.5">
+                <span>R18</span>
+              </button>
             </div>
-            <div class="text-xs font-mono text-gray-600 font-bold" id="carouselCounter">
+
+            <div class="text-xs font-mono text-gray-700 font-bold" id="carouselCounter">
               01 - 03 / 10
             </div>
           </div>
@@ -360,15 +536,14 @@
           <!-- 輪播主體：左箭頭 + 3 張直式作品卡 + 右箭頭 -->
           <div class="relative w-full flex items-center justify-center gap-2 sm:gap-5 px-1 sm:px-4">
             
-            <!-- 左箭頭按鈕 (最新一頁時不可點，並顯示「已經到頂了」很小的字) -->
+            <!-- 左箭頭按鈕 -->
             <div class="relative flex flex-col items-center justify-center">
               <button id="prevWorkBtn" 
                       type="button"
                       class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gray-500/80 text-white border-2 border-white shadow-md flex items-center justify-center transition-all hover:bg-ef-navy active:scale-90 disabled:opacity-35 disabled:cursor-not-allowed">
                 <i class="fa-solid fa-angle-left text-base sm:text-lg"></i>
               </button>
-              <!-- 已經到頂了 (極小字提示) -->
-              <span id="topLimitHint" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-100">
+              <span id="topLimitHint" data-i18n="top_limit" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-100">
                 已經到頂了
               </span>
             </div>
@@ -385,82 +560,66 @@
                       class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gray-500/80 text-white border-2 border-white shadow-md flex items-center justify-center transition-all hover:bg-ef-navy active:scale-90 disabled:opacity-35 disabled:cursor-not-allowed">
                 <i class="fa-solid fa-angle-right text-base sm:text-lg"></i>
               </button>
-              <!-- 已經到底了 (極小字提示) -->
-              <span id="bottomLimitHint" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-0">
+              <span id="bottomLimitHint" data-i18n="bottom_limit" class="mt-1.5 text-[10px] leading-tight text-gray-600 font-bold whitespace-nowrap select-none transition-opacity duration-200 opacity-0">
                 已經到底了
               </span>
             </div>
 
           </div>
 
-          <p class="mt-3 text-[11px] text-gray-500 font-medium">
+          <p class="mt-3 text-[11px] text-gray-600 font-medium" data-i18n="works_click_tip">
             點擊任意作品卡片即可直接前往該作品的 Pixiv 頁面
           </p>
         </section>
 
         <!-- =====================================================
-             第三部分：歡迎贊助 (Sponsorship - 參考圖3、圖4、圖5)
+             第三部分：歡迎贊助 (Sponsorship)
         ====================================================== -->
         <section id="sec-sponsor" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
           
-          <!-- 視圖 A：兩個贊助方案選擇 (參考圖3.jpg) -->
+          <!-- 視圖 A：兩個贊助方案選擇 -->
           <div id="sponsorTierList" class="w-full max-w-[740px] grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 px-2 section-fade">
             
-            <!-- 方案 1：小杯 (點擊進入圖5 Fanbox 專屬頁) -->
+            <!-- 方案 1：小杯 -->
             <div id="tierSmallBtn" 
                  role="button"
                  tabindex="0"
                  class="bg-ef-panel/90 hover:bg-[#8d8d8d] rounded-xl p-5 sm:p-6 flex flex-col cursor-pointer shadow-lg transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl group border border-white/20">
-              
-              <!-- 小杯方案圖片 -->
               <div class="w-full aspect-[16/10] bg-[#1a0909] rounded-md overflow-hidden mb-4 relative shadow-inner border border-black/20 group-hover:scale-[1.02] transition-transform">
                 <img src="plan_s.png" alt="小杯方案" class="w-full h-full object-cover">
               </div>
-
-              <!-- 中間：贊助名稱 -->
-              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide">
+              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide" data-i18n="tier_s_title">
                 小杯
               </h3>
-
-              <!-- 下面：贊助內容介紹 -->
-              <p class="text-xs sm:text-sm font-bold text-[#111111] leading-relaxed">
-                这个计划可以看到我公开的草稿进度(Fanbox專屬)
+              <p class="text-xs sm:text-sm font-bold text-[#111111] leading-relaxed" data-i18n="tier_s_desc">
+                這個計劃可以看到我公開的草稿進度(Fanbox專屬)
               </p>
             </div>
 
-            <!-- 方案 2：超大杯 (點擊進入圖4 Fanbox + Patreon + Fansky 頁) -->
+            <!-- 方案 2：超大杯 -->
             <div id="tierLargeBtn" 
                  role="button"
                  tabindex="0"
                  class="bg-ef-panel/90 hover:bg-[#8d8d8d] rounded-xl p-5 sm:p-6 flex flex-col cursor-pointer shadow-lg transition-all duration-200 hover:-translate-y-1.5 hover:shadow-xl group border border-white/20">
-              
-              <!-- 超大杯方案圖片 -->
               <div class="w-full aspect-[16/10] bg-[#1a0909] rounded-md overflow-hidden mb-4 relative shadow-inner border border-black/20 group-hover:scale-[1.02] transition-transform">
                 <img src="plan_l.png" alt="超大杯方案" class="w-full h-full object-cover">
               </div>
-
-              <!-- 中間：贊助名稱 -->
-              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide">
+              <h3 class="text-xl sm:text-2xl font-bold text-[#333333] mb-2 tracking-wide" data-i18n="tier_l_title">
                 超大杯
               </h3>
-
-              <!-- 下面：贊助內容介紹 -->
-              <p class="text-xs sm:text-[13px] font-bold text-[#111111] leading-snug">
-                感谢您的支持！这杯咖啡会变成我的创作动力。<br>
-                这个计划包括R18色情图片的0修高解像度版本和差分。另外，我也会不定期公开草稿与制作进度。
+              <p class="text-xs sm:text-[13px] font-bold text-[#111111] leading-snug" data-i18n="tier_l_desc">
+                感謝您的支持！這杯咖啡會變成我的創作動力。<br>
+                這個計劃包括R18圖片的無修高解析度版本和差分。另外，我也會不定期公開草稿與製作進度。
               </p>
             </div>
 
           </div>
 
-          <!-- 視圖 B：小杯專屬子頁面 (參考圖5.jpg - 只顯示 Fanbox) -->
+          <!-- 視圖 B：小杯專屬子頁面 (只顯示 Fanbox) -->
           <div id="sponsorSmallSubpage" class="hidden w-full max-w-[680px] min-h-[320px] bg-ef-panel/90 rounded-xl p-6 sm:p-10 relative flex-col items-center justify-center shadow-lg section-fade">
-            <!-- 左上角返回按鈕 (<) -->
             <button type="button" data-back-sponsor class="absolute top-5 left-5 w-10 h-10 rounded-full bg-white text-black shadow hover:scale-105 active:scale-95 transition-transform flex items-center justify-center font-bold">
               <i class="fa-solid fa-angle-left"></i>
             </button>
-
-            <!-- 單獨顯示 Fanbox Logo (圖5.jpg) -->
             <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" 
                class="group flex flex-col items-center gap-3 focus:outline-none">
               <div class="w-28 h-28 sm:w-32 sm:h-32 bg-[#fff394] rounded-md shadow-md flex items-center justify-center border border-black/10 group-hover:scale-105 group-active:scale-95 transition-transform overflow-hidden">
@@ -470,45 +629,85 @@
             </a>
           </div>
 
-          <!-- 視圖 C：超大杯專屬子頁面 (參考圖4.jpg - 顯示 Fanbox、Patreon、Fansky) -->
+          <!-- 視圖 C：超大杯專屬子頁面 (顯示 Fanbox、Patreon、Fansky) -->
           <div id="sponsorLargeSubpage" class="hidden w-full max-w-[680px] min-h-[320px] bg-ef-panel/90 rounded-xl p-6 sm:p-10 relative flex-col items-center justify-center shadow-lg section-fade">
-            <!-- 左上角返回按鈕 (<) -->
             <button type="button" data-back-sponsor class="absolute top-5 left-5 w-10 h-10 rounded-full bg-white text-black shadow hover:scale-105 active:scale-95 transition-transform flex items-center justify-center font-bold">
               <i class="fa-solid fa-angle-left"></i>
             </button>
 
             <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-14 mt-4">
-              
-              <!-- 1. Fanbox -->
-              <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" 
-                 class="group flex flex-col items-center gap-3">
+              <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center gap-3">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 bg-[#fff394] rounded-md shadow-md flex items-center justify-center border border-black/10 group-hover:scale-105 group-active:scale-95 transition-transform overflow-hidden">
                   <img src="fanbox.png" alt="Fanbox" class="w-full h-full object-cover">
                 </div>
                 <span class="text-base font-extrabold text-black">Fanbox</span>
               </a>
 
-              <!-- 2. Patreon -->
-              <a href="https://www.patreon.com/c/KMOS70967?vanity=user" target="_blank" rel="noopener noreferrer" 
-                 class="group flex flex-col items-center gap-3">
+              <a href="https://www.patreon.com/c/KMOS70967?vanity=user" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center gap-3">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-md shadow-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform overflow-hidden">
                   <img src="patreon.png" alt="Patreon" class="w-full h-full object-cover">
                 </div>
                 <span class="text-base font-extrabold text-black">Patreon</span>
               </a>
 
-              <!-- 3. Fansky (可在下方 href 替換為你的 Fansky 專屬網址) -->
-              <a href="https://www.fansky.net/KmOS/posts" target="_blank" rel="noopener noreferrer" 
-                 class="group flex flex-col items-center gap-3">
-                <div class=" h-24 sm:h-28 px-3 rounded-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform">
-                  <!-- 還原圖4 橘藍配色 Fansky 標誌 -->
+              <a href="https://www.fansky.net/KmOS/posts" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center gap-3">
+                <div class="h-24 sm:h-28 px-3 rounded-md flex items-center justify-center group-hover:scale-105 group-active:scale-95 transition-transform">
                   <div class="text-3xl sm:text-4xl font-black tracking-tight select-none flex items-baseline">
                     <span class="text-[#ff8811]">Fan</span><span class="text-[#5899e2]">sky</span>
                   </div>
                 </div>
                 <span class="text-base font-extrabold text-black">Fansky</span>
               </a>
+            </div>
+          </div>
 
+        </section>
+
+        <!-- =====================================================
+             第四部分：委託我 (Commission Me - 參考個人資料格式)
+        ====================================================== -->
+        <section id="sec-commission" class="relative z-10 w-full h-full hidden flex-col md:flex-row items-center justify-center gap-8 md:gap-14 px-2 sm:px-6 section-fade">
+          
+          <!-- 左邊：可點擊發聲的 KmOS avatar -->
+          <div class="relative flex flex-col items-center">
+            <button id="commAvatarBtn" 
+                    type="button"
+                    title="點擊播放音效！"
+                    class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer focus:outline-none group transition-transform">
+              <div class="absolute inset-0 rounded-full border-[5px] border-black"></div>
+              <div class="absolute inset-[9px] rounded-full border-[4px] border-black"></div>
+              <img src="avatar1.png" alt="KmOS avatar" class="w-40 h-40 sm:w-48 sm:h-48 object-contain relative z-10">
+            </button>
+            <span class="mt-2.5 text-[11px] font-mono text-gray-600 bg-white/70 px-2.5 py-0.5 rounded-full border border-black/10">
+              <i class="fa-solid fa-envelope-open-text mr-1 text-ef-navy"></i><span>COMMISSION STATUS: OPEN</span>
+            </span>
+          </div>
+
+          <!-- 右邊：委託資訊與聯絡方式 (與個人資料同格式) -->
+          <div class="flex-1 text-center md:text-left max-w-md">
+            <div class="inline-block text-[10px] font-mono uppercase tracking-widest bg-ef-navy text-white px-2 py-0.5 rounded mb-2">
+              COMMISSION // WORK INQUIRY
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-black text-black tracking-tight mb-4" data-i18n="comm_title">
+              委託我
+            </h2>
+            <div class="space-y-3 text-gray-800 text-sm sm:text-base leading-relaxed font-medium bg-white/55 backdrop-blur-sm p-4 sm:p-5 rounded-xl border border-white/80 shadow-sm">
+              <p data-i18n="comm_p1">
+                目前承接 <strong class="font-black text-ef-navy">日系角色插畫、同人二創、原創立繪與差分設計</strong> 相關委託。
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600" data-i18n="comm_p2">
+                如需詢問檔期與報價，請準備好「角色設定圖、構圖需求與預算範圍」，透過 <strong>X (Twitter) 私訊</strong> 或寄信至 <strong>kinmokusei0967@gmail.com</strong> 與我聯繫！
+              </p>
+              <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+                <a href="https://x.com/kinmokusei967" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-black text-white text-xs font-bold px-3.5 py-2 rounded-lg hover:bg-ef-navy transition-colors">
+                  <i class="fa-brands fa-x-twitter"></i>
+                  <span>X (DM)</span>
+                </a>
+                <a href="mailto:kinmokusei0967@gmail.com" class="inline-flex items-center gap-1.5 bg-white text-black border border-black/20 text-xs font-bold px-3.5 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                  <i class="fa-solid fa-envelope"></i>
+                  <span>Email</span>
+                </a>
+              </div>
             </div>
           </div>
 
@@ -519,23 +718,17 @@
   </div>
 
   <!-- =========================================================
-       互動邏輯、Web Audio 合成音效、Pixiv 實時作品抓取與輪播系統
+       互動邏輯、加載動畫、多語言系統、作品分類與 R18 變色引擎
   ========================================================== -->
   <script>
     /**
      * 【自訂設定區】
-     * 你可以在這裡隨時修改連結或預設作品備份清單
+     * 你可以在這裡隨時把「絕區零 (zzzArtworks)」和「R18 (r18Artworks)」的圖片檔名與 Pixiv 連結放進去！
      */
     const CONFIG = {
       pixivUserId: '58370556',
-      pixivProfileUrl: 'https://www.pixiv.net/users/58370556',
-      xUrl: 'https://x.com/kinmokusei967',
-      instagramUrl: 'https://www.instagram.com/kmos_wakuseipinboru/',
-      fanboxUrl: 'https://kmos.fanbox.cc/',
-      patreonUrl: 'https://www.patreon.com/c/KMOS70967?vanity=user',
-      fanskyUrl: 'https://www.fansky.net/KmOS/posts',
-      discordUrl: 'https://discord.gg/M7u3CTHnp',
-      // Blue Archive 靜態作品列表；圖片沿用目前頁面已有的本地備用圖片來源
+
+      // 1. Blue Archive 作品列表
       blueArchiveArtworks: [
         { id: '150827146', title: 'ツムギ', img: 'ツムギ.png', url: 'https://www.pixiv.net/artworks/150827146' },
         { id: '149329471', title: 'サユリ', img: 'サユリ.png', url: 'https://www.pixiv.net/artworks/149329471' },
@@ -547,12 +740,126 @@
         { id: '146136319', title: '睦月', img: '睦月.png', url: 'https://www.pixiv.net/artworks/146136319' },
         { id: '148847595', title: 'サツキ', img: 'サツキ.png', url: 'https://www.pixiv.net/artworks/148847595' },
         { id: '146343551', title: 'バニーガール（アリスとケイ）', img: 'バニーガール（アリスとケイ）.png', url: 'https://www.pixiv.net/artworks/146343551' }
+      ],
+
+      // 2. 絕區零 (Zenless Zone Zero) 作品列表 — 請依下方格式替換你的圖片檔名與 Pixiv 網址
+      zzzArtworks: [
+        { id: 'ZZZ_01', title: '絕區零作品 01', img: 'zzz1.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'ZZZ_02', title: '絕區零作品 02', img: 'zzz2.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'ZZZ_03', title: '絕區零作品 03', img: 'zzz3.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'ZZZ_04', title: '絕區零作品 04', img: 'zzz4.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'ZZZ_05', title: '絕區零作品 05', img: 'zzz5.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'ZZZ_06', title: '絕區零作品 06', img: 'zzz6.png', url: 'https://www.pixiv.net/users/58370556' }
+      ],
+
+      // 3. R18 作品列表 — 請依下方格式替換你的圖片檔名與 Pixiv / Fanbox 網址
+      r18Artworks: [
+        { id: 'R18_01', title: 'R18 限定作品 01', img: 'r18_1.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'R18_02', title: 'R18 限定作品 02', img: 'r18_2.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'R18_03', title: 'R18 限定作品 03', img: 'r18_3.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'R18_04', title: 'R18 限定作品 04', img: 'r18_4.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'R18_05', title: 'R18 限定作品 05', img: 'r18_5.png', url: 'https://www.pixiv.net/users/58370556' },
+        { id: 'R18_06', title: 'R18 限定作品 06', img: 'r18_6.png', url: 'https://www.pixiv.net/users/58370556' }
       ]
+    };
+
+    /**
+     * 【四國語言字典】
+     */
+    const I18N = {
+      'zh-Hant': {
+        nav_profile: '個人資料',
+        nav_works: '作品',
+        nav_sponsor: '歡迎贊助',
+        nav_commission: '委託我',
+        click_sound_hint: '點擊頭像播放音效',
+        about_title: 'About me',
+        about_p1: '你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>專注於二次元角色插畫、原創與二創同人繪製。',
+        about_p2: '平時會在 <strong>Pixiv</strong> 與 <strong>X (Twitter)</strong> 分享最新插畫作品；高畫質原圖、未公開草稿進度與限定差分則會定期更新於 <strong>FANBOX / Patreon / Fansky</strong>，歡迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！',
+        cat_ba: 'Blue Archive // 作品列表',
+        cat_zzz: '絕區零',
+        top_limit: '已經到頂了',
+        bottom_limit: '已經到底了',
+        works_click_tip: '點擊任意作品卡片即可直接前往該作品的 Pixiv 頁面',
+        tier_s_title: '小杯',
+        tier_s_desc: '這個計劃可以看到我公開的草稿進度(Fanbox專屬)',
+        tier_l_title: '超大杯',
+        tier_l_desc: '感謝您的支持！這杯咖啡會變成我的創作動力。<br>這個計劃包括R18圖片的無修高解析度版本和差分。另外，我也會不定期公開草稿與製作進度。',
+        comm_title: '委託我',
+        comm_p1: '目前承接 <strong class="font-black text-ef-navy">日系角色插畫、同人二創、原創立繪與差分設計</strong> 相關委託。',
+        comm_p2: '如需詢問檔期與報價，請準備好「角色設定圖、構圖需求與預算範圍」，透過 <strong>X (Twitter) 私訊</strong> 或寄信至 <strong>kinmokusei0967@gmail.com</strong> 與我聯繫！'
+      },
+      'zh-Hans': {
+        nav_profile: '个人资料',
+        nav_works: '作品',
+        nav_sponsor: '欢迎赞助',
+        nav_commission: '委托我',
+        click_sound_hint: '点击头像播放音效',
+        about_title: 'About me',
+        about_p1: '你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>专注于二次元角色插画、原创与二创同人绘制。',
+        about_p2: '平时会在 <strong>Pixiv</strong> 与 <strong>X (Twitter)</strong> 分享最新插画作品；高画质原图、未公开草稿进度与限定差分则会定期更新于 <strong>FANBOX / Patreon / Fansky</strong>，欢迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！',
+        cat_ba: 'Blue Archive // 作品列表',
+        cat_zzz: '绝区零',
+        top_limit: '已经到顶了',
+        bottom_limit: '已经到底了',
+        works_click_tip: '点击任意作品卡片即可直接前往该作品的 Pixiv 页面',
+        tier_s_title: '小杯',
+        tier_s_desc: '这个计划可以看到我公开的草稿进度(Fanbox专属)',
+        tier_l_title: '超大杯',
+        tier_l_desc: '感谢您的支持！这杯咖啡会变成我的创作动力。<br>这个计划包括R18色情图片的0修高解像度版本和差分。另外，我也会不定期公开草稿与制作进度。',
+        comm_title: '委托我',
+        comm_p1: '目前承接 <strong class="font-black text-ef-navy">日系角色插画、同人二创、原创立绘与差分设计</strong> 相关委托。',
+        comm_p2: '如需询问档期与报价，请准备好「角色设定图、构图需求与预算范围」，通过 <strong>X (Twitter) 私信</strong> 或发邮件至 <strong>kinmokusei0967@gmail.com</strong> 与我联系！'
+      },
+      'en': {
+        nav_profile: 'Profile',
+        nav_works: 'Artworks',
+        nav_sponsor: 'Support',
+        nav_commission: 'Commission',
+        click_sound_hint: 'Click avatar for sound!',
+        about_title: 'About me',
+        about_p1: 'Hi, I am <strong class="font-black text-ef-navy">KmOS</strong>!<br>Digital illustrator specializing in anime character art & doujin works.',
+        about_p2: 'I share my latest illustrations on <strong>Pixiv</strong> & <strong>X (Twitter)</strong>. High-res files, WIP sketches, and exclusive variations are regularly posted on <strong>FANBOX / Patreon / Fansky</strong>. Welcome to join our Discord!',
+        cat_ba: 'Blue Archive // Gallery',
+        cat_zzz: 'Zenless Zone Zero',
+        top_limit: 'Newest reached',
+        bottom_limit: 'End of list',
+        works_click_tip: 'Click any artwork card to view the full post on Pixiv',
+        tier_s_title: 'Small Cup',
+        tier_s_desc: 'Access to my public WIP sketches and draft progress (Fanbox Exclusive).',
+        tier_l_title: 'Extra Large Cup',
+        tier_l_desc: 'Thank you for your support! Includes uncensored high-res R18 illustrations, variations, plus WIP sketches.',
+        comm_title: 'Commission Me',
+        comm_p1: 'Currently open for <strong class="font-black text-ef-navy">anime character illustrations, fanart, and character design</strong> commissions.',
+        comm_p2: 'For quotes and availability, please send your character references, concept details, and budget via <strong>X (Twitter) DM</strong> or email <strong>kinmokusei0967@gmail.com</strong>!'
+      },
+      'ja': {
+        nav_profile: 'プロフィール',
+        nav_works: '作品一覧',
+        nav_sponsor: 'ご支援',
+        nav_commission: 'ご依頼',
+        click_sound_hint: 'アイコンをクリックして音を鳴らす',
+        about_title: 'About me',
+        about_p1: 'こんにちは、<strong class="font-black text-ef-navy">KmOS</strong> です！<br>二次元キャラクターイラスト・同人作品を制作しています。',
+        about_p2: '<strong>Pixiv</strong> や <strong>X (Twitter)</strong> で最新イラストを公開中。高画質原寸データ・ラフ進捗・限定差分は <strong>FANBOX / Patreon / Fansky</strong> にて定期更新しています！',
+        cat_ba: 'ブルーアーカイブ // 作品一覧',
+        cat_zzz: 'ゼンレスゾーンゼロ',
+        top_limit: 'これ以上戻れません',
+        bottom_limit: '最後のページです',
+        works_click_tip: '作品カードをクリックすると Pixiv の詳細ページへ移動します',
+        tier_s_title: 'Sサイズ杯',
+        tier_s_desc: '公開ラフや制作進捗を閲覧できるプランです（Fanbox限定）',
+        tier_l_title: 'Lサイズ杯',
+        tier_l_desc: 'ご支援ありがとうございます！R18イラストの無修正高解像度版・差分に加え、不定期でラフや制作進捗も公開します。',
+        comm_title: 'お仕事・ご依頼',
+        comm_p1: '<strong class="font-black text-ef-navy">キャラクターイラスト・二次創作・立ち絵デザイン</strong> などのご依頼を受け付けております。',
+        comm_p2: 'お見積りやスケジュールの相談は、参考資料・ご希望の構図・ご予算を添えて <strong>X (Twitter) のDM</strong> または <strong>kinmokusei0967@gmail.com</strong> までご連絡ください！'
+      }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
       // =======================================================
-      // 1. Web Audio API 合成音效引擎 (免外部音檔、100% 穩定觸發)
+      // 1. Web Audio API 合成音效引擎
       // =======================================================
       let audioCtx = null;
       function getAudioContext() {
@@ -566,14 +873,37 @@
         return audioCtx;
       }
 
-      // 頭像點擊專屬音效（清脆可愛的雙音階科幻 Pop 音效）
+      // 解鎖瀏覽器音效限制
+      window.addEventListener('pointerdown', () => getAudioContext(), { once: true });
+
+      // 加載畫面專屬：電子跳動音效
+      function playElectronicBounceSound(progressVal = 50) {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx || ctx.state !== 'running') return;
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          const baseFreq = 320 + (progressVal * 4.5);
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.45, now + 0.065);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.075);
+        } catch (e) {}
+      }
+
+      // 頭像點擊專屬音效
       function playAvatarSound() {
         try {
           const ctx = getAudioContext();
           if (!ctx) return;
           const now = ctx.currentTime;
 
-          // 主音 1
           const osc1 = ctx.createOscillator();
           const gain1 = ctx.createGain();
           osc1.type = 'sine';
@@ -586,7 +916,6 @@
           osc1.start(now);
           osc1.stop(now + 0.18);
 
-          // 主音 2 (可愛高音尾韻)
           const osc2 = ctx.createOscillator();
           const gain2 = ctx.createGain();
           osc2.type = 'triangle';
@@ -598,9 +927,7 @@
           gain2.connect(ctx.destination);
           osc2.start(now + 0.07);
           osc2.stop(now + 0.24);
-        } catch (err) {
-          console.warn('Audio play skipped:', err);
-        }
+        } catch (err) {}
       }
 
       // 終末地 UI 機械確認點擊音效
@@ -624,82 +951,126 @@
       }
 
       // =======================================================
-      // 2. 左上角頭像：點擊刷新頁面
+      // 2. 開場 Loading 1/100% 與 藍->黃->青藍 三色塊滑過動畫
+      // =======================================================
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingBarFill = document.getElementById('loadingBarFill');
+      const loadingCounterText = document.getElementById('loadingCounterText');
+      const wipeBlue = document.getElementById('wipeBlue');
+      const wipeYellow = document.getElementById('wipeYellow');
+      const wipeCyan = document.getElementById('wipeCyan');
+
+      let loadPercent = 1;
+      const loadTimer = setInterval(() => {
+        loadPercent += Math.floor(Math.random() * 4) + 2;
+        if (loadPercent > 100) loadPercent = 100;
+
+        loadingBarFill.style.width = `${loadPercent}%`;
+        loadingCounterText.textContent = `now loading ${loadPercent}/100%`;
+
+        if (loadPercent % 12 === 0 || loadPercent === 100) {
+          playElectronicBounceSound(loadPercent);
+        }
+
+        if (loadPercent >= 100) {
+          clearInterval(loadTimer);
+          // 觸發藍色、黃色、青藍色色塊由左往右滑過
+          setTimeout(() => {
+            wipeBlue.classList.add('wipe-active');
+            setTimeout(() => wipeYellow.classList.add('wipe-active'), 110);
+            setTimeout(() => wipeCyan.classList.add('wipe-active'), 220);
+
+            // 當色塊遮住畫面中央時，移除加載層露出主頁面
+            setTimeout(() => {
+              loadingOverlay.style.opacity = '0';
+              loadingOverlay.style.pointerEvents = 'none';
+              setTimeout(() => loadingOverlay.remove(), 350);
+            }, 420);
+          }, 180);
+        }
+      }, 32);
+
+      // =======================================================
+      // 3. 多國語言切換邏輯
+      // =======================================================
+      const langBtns = document.querySelectorAll('[data-lang]');
+      function applyLanguage(langCode) {
+        const dict = I18N[langCode] || I18N['zh-Hant'];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (dict[key]) {
+            el.innerHTML = dict[key];
+          }
+        });
+        langBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === langCode);
+        });
+      }
+
+      langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playUiTick(800);
+          applyLanguage(btn.getAttribute('data-lang'));
+        });
+      });
+
+      // =======================================================
+      // 4. 頭像互動（左上角重整 + 個人資料頭像 + 委託我頭像）
       // =======================================================
       const topRefreshBtn = document.getElementById('topRefreshBtn');
       topRefreshBtn.addEventListener('click', () => {
         playAvatarSound();
         topRefreshBtn.style.transform = 'scale(0.92)';
-        setTimeout(() => {
-          window.location.reload();
-        }, 180);
+        setTimeout(() => window.location.reload(), 180);
       });
 
-      // =======================================================
-      // 3. 第一部分：主頁大頭像點擊音效 + 波紋回彈
-      // =======================================================
-      const mainAvatarBtn = document.getElementById('mainAvatarBtn');
-      mainAvatarBtn.addEventListener('click', () => {
-        playAvatarSound();
+      function bindAvatarPop(btnId) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+          playAvatarSound();
+          btn.classList.remove('avatar-bounce');
+          void btn.offsetWidth;
+          btn.classList.add('avatar-bounce');
 
-        // 觸發 Q 彈動畫
-        mainAvatarBtn.classList.remove('avatar-bounce');
-        void mainAvatarBtn.offsetWidth;
-        mainAvatarBtn.classList.add('avatar-bounce');
-
-        // 產生外擴聲波圓環
-        const ring = document.createElement('div');
-        ring.className = 'sound-wave-ring';
-        mainAvatarBtn.appendChild(ring);
-        setTimeout(() => ring.remove(), 620);
-      });
+          const ring = document.createElement('div');
+          ring.className = 'sound-wave-ring';
+          btn.appendChild(ring);
+          setTimeout(() => ring.remove(), 620);
+        });
+      }
+      bindAvatarPop('mainAvatarBtn');
+      bindAvatarPop('commAvatarBtn');
 
       // =======================================================
-      // 4. 左側選單切換 & 右上背板變色邏輯 (圖1藍灰 vs 圖2~7金黃)
+      // 5. 左側導航選單切換 (個人資料 / 作品 / 歡迎贊助 / 委託我)
       // =======================================================
       const navButtons = document.querySelectorAll('[data-tab]');
-      const backingPlate = document.getElementById('backingPlate');
       const hudSectionCode = document.getElementById('hudSectionCode');
 
       const sections = {
         profile: document.getElementById('sec-profile'),
         works: document.getElementById('sec-works'),
-        sponsor: document.getElementById('sec-sponsor')
+        sponsor: document.getElementById('sec-sponsor'),
+        commission: document.getElementById('sec-commission')
       };
 
       const hudLabels = {
         profile: 'SEC_01 // ABOUT_ME',
-        works: 'SEC_02 // PIXIV_ARCHIVE_10',
-        sponsor: 'SEC_03 // SPONSORSHIP_TIERS'
+        works: 'SEC_02 // PIXIV_ARCHIVE',
+        sponsor: 'SEC_03 // SPONSORSHIP_TIERS',
+        commission: 'SEC_04 // COMMISSION_INFO'
       };
 
       function switchTab(tabKey) {
         playUiTick(740);
 
-        // 更新左側按鈕高亮狀態
         navButtons.forEach(btn => {
-          if (btn.getAttribute('data-tab') === tabKey) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
+          btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
         });
 
-        // 切換右上角背板顏色：所有頁面皆使用金黃色 (#d8bd68)
-        if (tabKey === 'profile') {
-          backingPlate.classList.remove('bg-ef-goldBack');
-          backingPlate.classList.remove('bg-ef-slateBack');
-          backingPlate.classList.add('profile-backing');
-        } else {
-          backingPlate.classList.remove('profile-backing');
-          backingPlate.classList.remove('bg-ef-slateBack');
-          backingPlate.classList.add('bg-ef-goldBack');
-        }
-
-        // 更新終末地 HUD 標題
         hudSectionCode.textContent = hudLabels[tabKey] || 'SEC_00';
 
-        // 隱藏所有區塊，顯示目標區塊
         Object.keys(sections).forEach(k => {
           const el = sections[k];
           if (k === tabKey) {
@@ -711,28 +1082,23 @@
           }
         });
 
-        // 若進入「作品」分頁，觸發由右邊飛快出來並急停的入場動畫
         if (tabKey === 'works') {
           renderWorksCarousel(true);
-        }
-
-        // 若進入「歡迎贊助」分頁，預設回到 2 個方案主頁
-        if (tabKey === 'sponsor') {
+        } else if (tabKey === 'sponsor') {
           showSponsorMain();
         }
       }
 
       navButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          switchTab(btn.getAttribute('data-tab'));
-        });
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
       });
 
       // =======================================================
-      // 5. 第二部分：Blue Archive 靜態作品列表 + 3 張輪播
+      // 6. 作品列表分類切換 (Blue Archive / 絕區零 / R18) + R18 粉紫黑主題
       // =======================================================
+      let currentCategory = 'ba';
       let artworksList = [...CONFIG.blueArchiveArtworks];
-      let currentStartIndex = 0; // 目前顯示的第 1 張索引 (範圍 0 ~ 7，共 10 張一次顯示 3 張)
+      let currentStartIndex = 0;
 
       const worksViewport = document.getElementById('worksViewport');
       const prevWorkBtn = document.getElementById('prevWorkBtn');
@@ -740,11 +1106,38 @@
       const topLimitHint = document.getElementById('topLimitHint');
       const bottomLimitHint = document.getElementById('bottomLimitHint');
       const carouselCounter = document.getElementById('carouselCounter');
-      const pixivSyncBadge = document.getElementById('pixivSyncBadge');
+      const catButtons = document.querySelectorAll('[data-work-cat]');
 
-      // 渲染 3 張作品卡片並套用「從右邊飛快出來然後停下來」動畫
+      function switchWorkCategory(catKey) {
+        playUiTick(880);
+        currentCategory = catKey;
+        currentStartIndex = 0;
+
+        catButtons.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-work-cat') === catKey);
+        });
+
+        if (catKey === 'ba') {
+          artworksList = [...CONFIG.blueArchiveArtworks];
+          document.body.classList.remove('r18-mode');
+        } else if (catKey === 'zzz') {
+          artworksList = [...CONFIG.zzzArtworks];
+          document.body.classList.remove('r18-mode');
+        } else if (catKey === 'r18') {
+          artworksList = [...CONFIG.r18Artworks];
+          // 點擊 R18：啟動粉框 + 紫背板 + 黑底白網格主題！
+          document.body.classList.add('r18-mode');
+        }
+
+        renderWorksCarousel(true);
+      }
+
+      catButtons.forEach(btn => {
+        btn.addEventListener('click', () => switchWorkCategory(btn.getAttribute('data-work-cat')));
+      });
+
       function renderWorksCarousel(animateFlyIn = true) {
-        const total = artworksList.length; // 10
+        const total = artworksList.length;
         const visibleItems = artworksList.slice(currentStartIndex, currentStartIndex + 3);
 
         worksViewport.innerHTML = '';
@@ -758,18 +1151,18 @@
           card.target = '_blank';
           card.rel = 'noopener noreferrer';
           card.className = `group relative block aspect-[3/4.2] bg-white rounded-sm shadow-md overflow-visible cursor-pointer transition-transform duration-200 hover:-translate-y-1.5 hover:shadow-xl ${animateFlyIn ? 'fly-in-right' : ''}`;
-          // 讓 3 張圖依序極速飛入並急停
           if (animateFlyIn) {
             card.style.animationDelay = `${idx * 65}ms`;
           }
 
-          const fallbackSrc = item.fallbackImg || CONFIG.blueArchiveArtworks[globalIndex % CONFIG.blueArchiveArtworks.length].img;
+          // 若新分類圖片尚未上傳，提供精美佔位預覽圖防止破圖
+          const placeholderUrl = `https://placehold.co/600x840/${currentCategory === 'r18' ? 'ec4899' : '061547'}/ffffff?text=${encodeURIComponent(item.title)}`;
 
           card.innerHTML = `
             <div class="w-full h-full overflow-hidden relative bg-gray-200 border border-white">
               <img src="${item.img}" 
                    alt="${item.title}"
-                   onerror="this.onerror=null; this.src='${fallbackSrc}';"
+                   onerror="this.onerror=null; this.src='${placeholderUrl}';"
                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between">
                 <span class="text-[11px] font-bold text-white truncate">${item.title}</span>
@@ -778,7 +1171,6 @@
             </div>
 
             ${isNewestFirstWork ? `
-              <!-- 最新作品第一張右上角的小型紅色鋸齒 NEW 標誌 (參考圖2.jpg，尺寸精緻縮小) -->
               <div class="new-badge-pulse absolute -top-3 -right-3 w-9 h-9 sm:w-10 sm:h-10 z-20 pointer-events-none drop-shadow">
                 <svg viewBox="0 0 100 100" class="w-full h-full">
                   <polygon fill="#ff1e00" points="
@@ -793,34 +1185,20 @@
           worksViewport.appendChild(card);
         });
 
-        // 更新頁碼計數器
         const startNum = String(currentStartIndex + 1).padStart(2, '0');
         const endNum = String(Math.min(currentStartIndex + 3, total)).padStart(2, '0');
         carouselCounter.textContent = `${startNum} - ${endNum} / ${String(total).padStart(2, '0')}`;
 
-        // 更新左右箭頭狀態與「已經到頂了」小字
         const atTop = currentStartIndex <= 0;
-        const atBottom = currentStartIndex >= total - 3;
+        const atBottom = currentStartIndex >= Math.max(0, total - 3);
 
         prevWorkBtn.disabled = atTop;
         nextWorkBtn.disabled = atBottom;
 
-        // 當在最新一頁時，左箭頭無法點擊並顯示小字「已經到頂了」
-        if (atTop) {
-          topLimitHint.classList.remove('opacity-0');
-          topLimitHint.classList.add('opacity-100');
-        } else {
-          topLimitHint.classList.remove('opacity-100');
-          topLimitHint.classList.add('opacity-0');
-        }
-
-        if (atBottom) {
-          bottomLimitHint.classList.remove('opacity-0');
-          bottomLimitHint.classList.add('opacity-100');
-        } else {
-          bottomLimitHint.classList.remove('opacity-100');
-          bottomLimitHint.classList.add('opacity-0');
-        }
+        topLimitHint.classList.toggle('opacity-100', atTop);
+        topLimitHint.classList.toggle('opacity-0', !atTop);
+        bottomLimitHint.classList.toggle('opacity-100', atBottom);
+        bottomLimitHint.classList.toggle('opacity-0', !atBottom);
       }
 
       prevWorkBtn.addEventListener('click', () => {
@@ -839,11 +1217,10 @@
         }
       });
 
-      // 使用固定的 Blue Archive 作品列表，不再依賴 Pixiv 即時同步
       renderWorksCarousel(false);
 
       // =======================================================
-      // 6. 第三部分：歡迎贊助 (小杯 -> 圖5 Fanbox / 超大杯 -> 圖4 三平台)
+      // 7. 歡迎贊助子頁面切換
       // =======================================================
       const sponsorTierList = document.getElementById('sponsorTierList');
       const sponsorSmallSubpage = document.getElementById('sponsorSmallSubpage');
@@ -860,7 +1237,6 @@
         sponsorLargeSubpage.classList.remove('flex');
       }
 
-      // 點擊「小杯」 -> 只顯示 Fanbox (圖5.jpg)
       tierSmallBtn.addEventListener('click', () => {
         playUiTick(860);
         sponsorTierList.classList.add('hidden');
@@ -869,7 +1245,6 @@
         sponsorSmallSubpage.classList.add('flex');
       });
 
-      // 點擊「超大杯」 -> 顯示 Fanbox、Patreon、Fansky (圖4.jpg)
       tierLargeBtn.addEventListener('click', () => {
         playUiTick(920);
         sponsorTierList.classList.add('hidden');
@@ -878,14 +1253,12 @@
         sponsorLargeSubpage.classList.add('flex');
       });
 
-      // 子頁面左上角返回箭頭
       backSponsorBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           playUiTick(540);
           showSponsorMain();
         });
       });
-
     });
   </script>
 </body>
