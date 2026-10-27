@@ -137,20 +137,20 @@
       box-shadow: -3px -3px 0px #9333ea, 3px 3px 0px #fbcfe8;
     }
 
-    /* 作品分類按鈕 */
-    .work-cat-btn {
+    /* 作品與商品分類按鈕 */
+    .work-cat-btn, .shop-cat-btn {
       background: rgba(255, 255, 255, 0.85);
       color: #1f2937;
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 6px;
-      padding: 4px 14px;
+      padding: 4px 12px;
       font-size: 11px;
       font-weight: 800;
       transition: all 0.2s ease;
       cursor: pointer;
     }
-    .work-cat-btn:hover { background: #ffffff; transform: translateY(-1px); }
-    .work-cat-btn.active {
+    .work-cat-btn:hover, .shop-cat-btn:hover { background: #ffffff; transform: translateY(-1px); }
+    .work-cat-btn.active, .shop-cat-btn.active {
       background: #ffffff;
       color: #000000;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -250,7 +250,6 @@
       100% { transform: translateX(102%); }
     }
 
-    /* 委託區塊自訂細捲軸 */
     .custom-scroll::-webkit-scrollbar { width: 5px; }
     .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 8px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #061547; border-radius: 8px; }
@@ -316,7 +315,7 @@
         <div class="w-5 h-4 bg-gray-100 rounded ml-9 mt-1 hidden lg:block"></div>
       </div>
 
-      <!-- 左側導航選單 (5 大選項：個人資料 / 作品 / 歡迎贊助 / 委託我 / 商品) -->
+      <!-- 左側導航選單 (5 大選項：個人資料 / 作品 / 歡迎贊助 / 委託我 / 最新商品) -->
       <nav class="grid grid-cols-2 sm:grid-cols-5 lg:flex lg:flex-col gap-2" aria-label="Main Navigation">
         <button type="button" data-tab="profile" class="ef-nav-btn active py-3 px-5 text-left text-sm sm:text-base text-gray-800 flex items-center justify-between group">
           <span data-i18n="nav_profile">個人資料</span>
@@ -339,7 +338,10 @@
         </button>
 
         <button type="button" data-tab="shop" class="ef-nav-btn py-3 px-5 text-left text-sm sm:text-base text-gray-700 flex items-center justify-between group">
-          <span data-i18n="nav_shop">商品</span>
+          <span class="flex items-center gap-1.5">
+            <span data-i18n="nav_shop">最新商品</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+          </span>
           <span class="text-[10px] font-mono text-gray-400 group-hover:text-black">05</span>
         </button>
       </nav>
@@ -372,8 +374,8 @@
     <!-- 左下角終末地風格工業裝飾銘牌 -->
     <div class="hidden lg:flex flex-col gap-1 pt-6 border-t border-gray-200/80 text-[11px] font-mono text-gray-400">
       <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-gray-500 font-bold">PIXIV SYNC: UID 58370556</span>
+        <span id="sidebarSyncDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="sidebarSyncLabel" class="text-gray-500 font-bold">PIXIV LIVE: #151125057</span>
       </div>
       <div>kinmokusei0967@gmail.com // VER 777.0</div>
     </div>
@@ -426,7 +428,6 @@
         ====================================================== -->
         <section id="sec-profile" class="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 px-2 sm:px-6 section-fade">
           
-          <!-- 左邊：可點擊發聲的 KmOS avatar (10種隨機電子音 + 20次金幣聲) -->
           <div class="relative flex flex-col items-center">
             <button id="mainAvatarBtn" 
                     type="button"
@@ -441,7 +442,6 @@
             </span>
           </div>
 
-          <!-- 右邊：About me 個人介紹文字 -->
           <div class="flex-1 text-center md:text-left max-w-md">
             <div class="inline-block text-[10px] font-mono uppercase tracking-widest bg-ef-navy text-white px-2 py-0.5 rounded mb-2">
               CREATOR PROFILE // KMOS
@@ -463,27 +463,31 @@
         </section>
 
         <!-- =====================================================
-             第二部分：作品列表 (Blue Archive / 絕區零 / 鳴潮 / R18)
+             第二部分：作品列表 (實時同步 Pixiv 最新作品 + 分類切換)
         ====================================================== -->
         <section id="sec-works" class="relative z-10 w-full h-full hidden flex-col items-center justify-center">
           
-          <!-- 頂部作品分類按鈕列：鳴潮在絕區零和R18中間 -->
-          <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 px-2 sm:px-8">
-            <div class="flex flex-wrap items-center gap-2">
+          <!-- 頂部作品分類按鈕列：新增「⚡ 最新發佈 (Pixiv同步)」作為第一個預設標籤 -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 px-2 sm:px-6">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <!-- 0. Pixiv 最新發佈實時同步 (含 151125057) -->
+              <button type="button" data-work-cat="live" class="work-cat-btn active inline-flex items-center gap-1.5">
+                <span id="liveCatDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span data-i18n="cat_live">最新發佈 // Pixiv 同步</span>
+              </button>
               <!-- 1. Blue Archive -->
-              <button type="button" data-work-cat="ba" class="work-cat-btn active inline-flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span data-i18n="cat_ba">Blue Archive // 作品列表</span>
+              <button type="button" data-work-cat="ba" class="work-cat-btn inline-flex items-center gap-1.5">
+                <span data-i18n="cat_ba">Blue Archive</span>
               </button>
               <!-- 2. 絕區零 -->
               <button type="button" data-work-cat="zzz" class="work-cat-btn inline-flex items-center gap-1.5">
                 <span data-i18n="cat_zzz">絕區零</span>
               </button>
-              <!-- 3. 鳴潮 (位於絕區零與 R18 中間) -->
+              <!-- 3. 鳴潮 -->
               <button type="button" data-work-cat="wuwa" class="work-cat-btn inline-flex items-center gap-1.5">
                 <span data-i18n="cat_wuwa">鳴潮</span>
               </button>
-              <!-- 4. R18 (點擊切換粉紫暗黑主題) -->
+              <!-- 4. R18 -->
               <button type="button" data-work-cat="r18" class="work-cat-btn r18-cat inline-flex items-center gap-1.5">
                 <span>R18</span>
               </button>
@@ -521,9 +525,12 @@
             </div>
           </div>
 
-          <p class="mt-3 text-[11px] text-gray-600 font-medium" data-i18n="works_click_tip">
-            點擊任意作品卡片即可直接前往該作品的 Pixiv 頁面
-          </p>
+          <!-- 底部同步狀態提示 -->
+          <div class="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] text-gray-600 font-medium">
+            <span id="pixivSyncStatusText">
+              <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>已連接最新作品 #151125057（點擊卡片直達 Pixiv 詳細頁）
+            </span>
+          </div>
         </section>
 
         <!-- =====================================================
@@ -599,11 +606,10 @@
         </section>
 
         <!-- =====================================================
-             第四部分：委託我 (Commission Me - 含完整條款、流程與 Google 問卷入口)
+             第四部分：委託我 (Commission Me)
         ====================================================== -->
         <section id="sec-commission" class="relative z-10 w-full h-full hidden flex-col md:flex-row items-center justify-center gap-6 md:gap-10 px-1 sm:px-4 section-fade">
           
-          <!-- 左邊：可點擊發聲的 KmOS avatar + 接稿狀態 -->
           <div class="relative flex flex-col items-center shrink-0">
             <button id="commAvatarBtn" 
                     type="button"
@@ -619,7 +625,6 @@
             </div>
           </div>
 
-          <!-- 右邊：委託詳情卡片 + Google 表單按鈕 -->
           <div class="flex-1 w-full max-w-xl text-left">
             <div class="flex items-center justify-between mb-1.5">
               <span class="inline-block text-[10px] font-mono uppercase tracking-widest bg-ef-navy text-white px-2 py-0.5 rounded">
@@ -630,22 +635,17 @@
               委託我
             </h2>
 
-            <!-- 委託條款與流程清單 (可捲動資訊框) -->
             <div class="custom-scroll max-h-[250px] sm:max-h-[270px] overflow-y-auto space-y-2.5 text-gray-800 text-xs sm:text-[13px] leading-relaxed bg-white/70 backdrop-blur-sm p-3.5 sm:p-4 rounded-xl border border-white/90 shadow-sm">
-              
-              <!-- 1. 是否接委託 & 接稿類型 -->
               <div class="bg-white/80 p-2.5 rounded-lg border border-black/5">
                 <div class="font-black text-ef-navy mb-0.5" data-i18n="comm_sec1_title">■ 接稿狀態與類型</div>
                 <p data-i18n="comm_sec1_desc">目前<strong>開放接稿中</strong>。承接類型：日系動漫角色插畫、同人二創、原創立繪、角色設計及差分版本（含一般向 / R18）。</p>
               </div>
 
-              <!-- 2. 價格區間與報價方式 -->
               <div class="bg-white/80 p-2.5 rounded-lg border border-black/5">
                 <div class="font-black text-ef-navy mb-0.5" data-i18n="comm_sec2_title">■ 價格區間與報價方式</div>
                 <p data-i18n="comm_sec2_desc">依構圖複雜度、服裝細節、背景需求與差分數量進行個別報價（頭像 / 半身 / 全身插畫）。請透過下方 Google 問卷提交需求以獲取準確報價。</p>
               </div>
 
-              <!-- 3. 流程說明 -->
               <div class="bg-white/80 p-2.5 rounded-lg border border-black/5">
                 <div class="font-black text-ef-navy mb-1" data-i18n="comm_sec3_title">■ 委託流程說明</div>
                 <div class="flex flex-wrap items-center gap-1 text-[11px] font-bold text-gray-900" data-i18n="comm_sec3_steps">
@@ -658,18 +658,16 @@
                 </div>
               </div>
 
-              <!-- 4. 使用條款 -->
               <div class="bg-white/80 p-2.5 rounded-lg border border-black/5">
                 <div class="font-black text-ef-navy mb-0.5" data-i18n="comm_sec4_title">■ 使用條款（商用 / 修改 / 版權）</div>
                 <ul class="list-disc list-inside space-y-0.5 text-gray-700" data-i18n="comm_sec4_list">
-                  <li><strong>使用權限</strong>：預設為個人非商用收藏；如需商用（周邊印製、VTuber 收益化等）請事先告知並另計買斷/授權費。</li>
-                  <li><strong>修改次數</strong>：草圖階段可免費微調 2 次；完稿階段僅接受小幅色彩微調，不接受大幅度改構圖。</li>
-                  <li><strong>版權歸屬</strong>：著作權歸繪師 KmOS 所有，預設會打上浮水印公開展示於作品集（如需延後公開或保密請提前提出）。</li>
+                  <li><strong>使用權限</strong>：預設為個人非商用收藏；如需商用請事先告知並另計授權費。</li>
+                  <li><strong>修改次數</strong>：草圖階段可免費微調 2 次；完稿階段僅接受小幅色彩微調。</li>
+                  <li><strong>版權歸屬</strong>：著作權歸繪師 KmOS 所有，預設會打上浮水印公開展示於作品集。</li>
                 </ul>
               </div>
             </div>
 
-            <!-- 5. 委託申請表 (Google 問卷) 與聯繫入口 -->
             <div class="mt-3 flex flex-wrap items-center gap-2.5">
               <a id="googleFormBtn" href="https://docs.google.com/forms/" target="_blank" rel="noopener noreferrer" 
                  class="inline-flex items-center gap-2 bg-[#061547] hover:bg-blue-900 text-white text-xs sm:text-sm font-black px-4 py-2.5 rounded-lg shadow-md hover:-translate-y-0.5 transition-all">
@@ -693,23 +691,60 @@
         </section>
 
         <!-- =====================================================
-             第五部分：商品頁面 (Merchandise / Shop - 未開放)
+             第五部分：最新商品與訂閱更新 (FANBOX / Patreon / Fansky 同步專區)
         ====================================================== -->
-        <section id="sec-shop" class="relative z-10 w-full h-full hidden flex-col items-center justify-center text-center px-4 section-fade">
-          <div class="bg-white/75 backdrop-blur-md border-2 border-dashed border-gray-400 rounded-2xl p-8 sm:p-12 max-w-md w-full shadow-lg flex flex-col items-center">
-            <div class="w-16 h-16 rounded-full bg-ef-navy text-yellow-400 flex items-center justify-center text-2xl mb-4 shadow-md">
-              <i class="fa-solid fa-lock"></i>
+        <section id="sec-shop" class="relative z-10 w-full h-full hidden flex-col items-center justify-center section-fade">
+          
+          <!-- 頂部平台篩選列與直達連結 -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 px-2 sm:px-6">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" data-shop-filter="all" class="shop-cat-btn active inline-flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span data-i18n="shop_filter_all">全部最新商品</span>
+              </button>
+              <button type="button" data-shop-filter="fanbox" class="shop-cat-btn inline-flex items-center gap-1">
+                <span>FANBOX</span>
+              </button>
+              <button type="button" data-shop-filter="patreon" class="shop-cat-btn inline-flex items-center gap-1">
+                <span>Patreon</span>
+              </button>
+              <button type="button" data-shop-filter="fansky" class="shop-cat-btn inline-flex items-center gap-1">
+                <span>Fansky</span>
+              </button>
             </div>
-            <div class="text-[10px] font-mono uppercase tracking-widest bg-yellow-400 text-black font-black px-2.5 py-0.5 rounded mb-2">
-              STORE MODULE // LOCKED
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-black mb-2" data-i18n="shop_title">
-              商品頁面（未開放）
-            </h2>
-            <p class="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed" data-i18n="shop_desc">
-              同人誌畫集與周邊通販系統正在籌備中，敬請期待後續開放通知！
-            </p>
+
+            <span id="shopSyncBadge" class="text-[11px] font-mono text-gray-700 bg-white/80 px-2.5 py-0.5 rounded border border-black/10">
+              <i class="fa-solid fa-rotate mr-1"></i>SYNCING PLATFORMS...
+            </span>
           </div>
+
+          <!-- 最新商品卡片展示區 (一次展示 3 張最新商品/貼文) -->
+          <div id="shopCardsViewport" class="w-full max-w-[780px] grid grid-cols-1 sm:grid-cols-3 gap-4 px-2 sm:px-6">
+            <!-- 由 JS 動態渲染 FANBOX / Patreon / Fansky 最新商品卡 -->
+          </div>
+
+          <!-- 三大平台快速直達底部導覽列 -->
+          <div class="mt-4 flex flex-wrap items-center justify-center gap-2.5 px-2">
+            <a href="https://kmos.fanbox.cc/" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 bg-[#fff394] hover:bg-[#ffe853] text-black text-xs font-black px-3.5 py-1.5 rounded-lg border border-black/15 shadow-sm transition-transform hover:-translate-y-0.5">
+              <i class="fa-solid fa-cube text-amber-600"></i>
+              <span>前往 FANBOX</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+            <a href="https://www.patreon.com/c/KMOS70967?vanity=user" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 bg-black hover:bg-gray-800 text-white text-xs font-black px-3.5 py-1.5 rounded-lg shadow-sm transition-transform hover:-translate-y-0.5">
+              <i class="fa-brands fa-patreon text-[#ff424d]"></i>
+              <span>前往 Patreon</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+            <a href="https://www.fansky.net/KmOS/posts" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-black text-xs font-black px-3.5 py-1.5 rounded-lg border border-black/15 shadow-sm transition-transform hover:-translate-y-0.5">
+              <span class="font-black"><span class="text-[#ff8811]">Fan</span><span class="text-[#5899e2]">sky</span></span>
+              <span>最新貼文</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+
         </section>
 
       </div>
@@ -717,20 +752,40 @@
   </div>
 
   <!-- =========================================================
-       互動邏輯、10種隨機音效+20次金幣聲、四分類作品與多語系引擎
+       互動邏輯、Pixiv 151125057 實時同步引擎、三大訂閱平台商品同步
   ========================================================== -->
   <script>
     /**
      * 【自訂設定區】
-     * 1. 將 googleFormUrl 替換為你的 Google 問卷網址
-     * 2. 在 wuwaArtworks / zzzArtworks / r18Artworks 中填入你的圖片與 Pixiv 連結
+     * 1. Pixiv 預設已幫你釘選最新作品 151125057，且網頁打開時會自動從 Pixiv 抓取你最新發佈的 10 張作品！
+     * 2. 如果你想手動新增作品，只需填寫 Pixiv 的數字 ID（例如 '151125057'），系統會自動幫你載入 Pixiv 圖片與網址，免手動傳圖！
      */
     const CONFIG = {
       pixivUserId: '58370556',
-      googleFormUrl: 'https://docs.google.com/forms/', // <-- 請在這裡貼上你的 Google 問卷實際網址！
+      latestPinnedPixivId: '151125057', // 你當前的最新 Pixiv 作品 ID
+      googleFormUrl: 'https://docs.google.com/forms/',
+      fanboxCreatorId: 'kmos',
+      fanboxUrl: 'https://kmos.fanbox.cc/',
+      patreonUrl: 'https://www.patreon.com/c/KMOS70967?vanity=user',
+      fanskyUrl: 'https://www.fansky.net/KmOS/posts',
 
-      // 1. Blue Archive 作品列表
+      // 0. Pixiv 最新發佈預設保底清單（第 1 張為你最新的 151125057，網頁啟動後會自動連線 Pixiv 同步最新 10 張）
+      pixivLiveArtworks: [
+        { id: '151125057', title: 'Latest Pixiv Artwork #151125057', url: 'https://www.pixiv.net/artworks/151125057' },
+        { id: '150827146', title: 'ツムギ', img: 'ツムギ.png', url: 'https://www.pixiv.net/artworks/150827146' },
+        { id: '149824872', title: 'セイア', img: 'セイア.png', url: 'https://www.pixiv.net/artworks/149824872' },
+        { id: '149719494', title: 'ミカ', img: 'ミカ.png', url: 'https://www.pixiv.net/artworks/149719494' },
+        { id: '149329471', title: 'サユリ', img: 'サユリ.png', url: 'https://www.pixiv.net/artworks/149329471' },
+        { id: '149328986', title: '渡海ココロ', img: '渡海ココロ.png', url: 'https://www.pixiv.net/artworks/149328986' },
+        { id: '149104456', title: 'コトネ', img: 'コトネ.png', url: 'https://www.pixiv.net/artworks/149104456' },
+        { id: '148921771', title: 'チアキ', img: 'チアキ.png', url: 'https://www.pixiv.net/artworks/148921771' },
+        { id: '148847595', title: 'サツキ', img: 'サツキ.png', url: 'https://www.pixiv.net/artworks/148847595' },
+        { id: '146343551', title: 'バニーガール（アリスとケイ）', img: 'バニーガール（アリスとケイ）.png', url: 'https://www.pixiv.net/artworks/146343551' }
+      ],
+
+      // 1. Blue Archive 作品列表（已將最新 151125057 置頂）
       blueArchiveArtworks: [
+        { id: '151125057', title: '最新作品 #151125057', url: 'https://www.pixiv.net/artworks/151125057' },
         { id: '150827146', title: 'ツムギ', img: 'ツムギ.png', url: 'https://www.pixiv.net/artworks/150827146' },
         { id: '149329471', title: 'サユリ', img: 'サユリ.png', url: 'https://www.pixiv.net/artworks/149329471' },
         { id: '149328986', title: '渡海ココロ', img: '渡海ココロ.png', url: 'https://www.pixiv.net/artworks/149328986' },
@@ -739,38 +794,65 @@
         { id: '149104456', title: 'コトネ', img: 'コトネ.png', url: 'https://www.pixiv.net/artworks/149104456' },
         { id: '148921771', title: 'チアキ', img: 'チアキ.png', url: 'https://www.pixiv.net/artworks/148921771' },
         { id: '146136319', title: '睦月', img: '睦月.png', url: 'https://www.pixiv.net/artworks/146136319' },
-        { id: '148847595', title: 'サツキ', img: 'サツキ.png', url: 'https://www.pixiv.net/artworks/148847595' },
-        { id: '146343551', title: 'バニーガール（アリスとケイ）', img: 'バニーガール（アリスとケイ）.png', url: 'https://www.pixiv.net/artworks/146343551' }
+        { id: '148847595', title: 'サツキ', img: 'サツキ.png', url: 'https://www.pixiv.net/artworks/148847595' }
       ],
 
       // 2. 絕區零 (Zenless Zone Zero) 作品列表
       zzzArtworks: [
         { id: 'ZZZ_01', title: '絕區零作品 01', img: 'zzz1.png', url: 'https://www.pixiv.net/users/58370556' },
         { id: 'ZZZ_02', title: '絕區零作品 02', img: 'zzz2.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'ZZZ_03', title: '絕區零作品 03', img: 'zzz3.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'ZZZ_04', title: '絕區零作品 04', img: 'zzz4.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'ZZZ_05', title: '絕區零作品 05', img: 'zzz5.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'ZZZ_06', title: '絕區零作品 06', img: 'zzz6.png', url: 'https://www.pixiv.net/users/58370556' }
+        { id: 'ZZZ_03', title: '絕區零作品 03', img: 'zzz3.png', url: 'https://www.pixiv.net/users/58370556' }
       ],
 
       // 3. 鳴潮 (Wuthering Waves) 作品列表
       wuwaArtworks: [
         { id: 'WUWA_01', title: '鳴潮作品 01', img: 'wuwa1.png', url: 'https://www.pixiv.net/users/58370556' },
         { id: 'WUWA_02', title: '鳴潮作品 02', img: 'wuwa2.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'WUWA_03', title: '鳴潮作品 03', img: 'wuwa3.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'WUWA_04', title: '鳴潮作品 04', img: 'wuwa4.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'WUWA_05', title: '鳴潮作品 05', img: 'wuwa5.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'WUWA_06', title: '鳴潮作品 06', img: 'wuwa6.png', url: 'https://www.pixiv.net/users/58370556' }
+        { id: 'WUWA_03', title: '鳴潮作品 03', img: 'wuwa3.png', url: 'https://www.pixiv.net/users/58370556' }
       ],
 
       // 4. R18 作品列表
       r18Artworks: [
-        { id: 'R18_01', title: 'R18 限定作品 01', img: 'r18_1.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'R18_02', title: 'R18 限定作品 02', img: 'r18_2.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'R18_03', title: 'R18 限定作品 03', img: 'r18_3.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'R18_04', title: 'R18 限定作品 04', img: 'r18_4.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'R18_05', title: 'R18 限定作品 05', img: 'r18_5.png', url: 'https://www.pixiv.net/users/58370556' },
-        { id: 'R18_06', title: 'R18 限定作品 06', img: 'r18_6.png', url: 'https://www.pixiv.net/users/58370556' }
+        { id: '151125057', title: 'R18 最新差分 #151125057', url: 'https://www.pixiv.net/artworks/151125057' },
+        { id: 'R18_02', title: 'R18 限定作品 02', img: 'r18_2.png', url: 'https://kmos.fanbox.cc/' },
+        { id: 'R18_03', title: 'R18 限定作品 03', img: 'r18_3.png', url: 'https://www.patreon.com/c/KMOS70967?vanity=user' }
+      ],
+
+      // 5. FANBOX / Patreon / Fansky 最新商品與貼文列表 (當自動 API 同步完成時會動態更新此列表)
+      shopProducts: [
+        {
+          platform: 'fanbox',
+          badge: 'FANBOX // LATEST',
+          badgeColor: 'bg-[#fff394] text-black',
+          title: '【最新發佈】#151125057 高畫質無修原圖 + 限定差分 PSD',
+          desc: '收錄最新 Pixiv 作品的高解析度無浮水印原檔、R18 差分與草稿進度。',
+          price: '¥100 / ¥500 方案',
+          img: 'https://embed.pixiv.net/decorate.php?illust_id=151125057',
+          fallbackImg: 'plan_l.png',
+          url: 'https://kmos.fanbox.cc/'
+        },
+        {
+          platform: 'patreon',
+          badge: 'PATREON // EXCLUSIVE',
+          badgeColor: 'bg-[#ff424d] text-white',
+          title: '【Patreon Exclusive】Latest High-Res Pack & R18 Variations',
+          desc: '海外贊助者專屬高畫質無修圖包、角色差分與每月創作進度更新。',
+          price: 'Patreon Membership',
+          img: 'https://embed.pixiv.net/decorate.php?illust_id=151125057',
+          fallbackImg: 'plan_l.png',
+          url: 'https://www.patreon.com/c/KMOS70967?vanity=user'
+        },
+        {
+          platform: 'fansky',
+          badge: 'FANSKY // NEW POST',
+          badgeColor: 'bg-[#ff8811] text-white',
+          title: '【Fansky 最新更新】KmOS 專屬高畫質差分與限定內容',
+          desc: '同步更新最新插畫差分、未公開草稿與單篇解鎖內容，點擊前往查看！',
+          price: 'Fansky 訂閱 / 單購',
+          img: 'https://embed.pixiv.net/decorate.php?illust_id=151125057',
+          fallbackImg: 'plan_s.png',
+          url: 'https://www.fansky.net/KmOS/posts'
+        }
       ]
     };
 
@@ -783,17 +865,17 @@
         nav_works: '作品',
         nav_sponsor: '歡迎贊助',
         nav_commission: '委託我',
-        nav_shop: '商品',
+        nav_shop: '最新商品',
         click_sound_hint: '點擊頭像播放音效 (滿20次掉金幣)',
         about_title: 'About me',
         about_p1: '你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>專注於二次元角色插畫、原創與二創同人繪製。',
         about_p2: '平時會在 <strong>Pixiv</strong> 與 <strong>X (Twitter)</strong> 分享最新插畫作品；高畫質原圖、未公開草稿進度與限定差分則會定期更新於 <strong>FANBOX / Patreon / Fansky</strong>，歡迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！',
-        cat_ba: 'Blue Archive // 作品列表',
+        cat_live: '最新發佈 // Pixiv 同步',
+        cat_ba: 'Blue Archive',
         cat_zzz: '絕區零',
         cat_wuwa: '鳴潮',
         top_limit: '已經到頂了',
         bottom_limit: '已經到底了',
-        works_click_tip: '點擊任意作品卡片即可直接前往該作品的 Pixiv 頁面',
         tier_s_title: '小杯',
         tier_s_desc: '這個計劃可以看到我公開的草稿進度(Fanbox專屬)',
         tier_l_title: '超大杯',
@@ -809,25 +891,24 @@
         comm_sec4_title: '■ 使用條款（商用 / 修改 / 版權）',
         comm_sec4_list: '<li><strong>使用權限</strong>：預設為個人非商用收藏；如需商用請事先告知並另計授權費。</li><li><strong>修改次數</strong>：草圖階段可免費微調 2 次；完稿階段僅接受小幅色彩微調。</li><li><strong>版權歸屬</strong>：著作權歸繪師 KmOS 所有，預設會打上浮水印公開展示於作品集。</li>',
         comm_form_btn: '填寫 Google 委託申請表單',
-        shop_title: '商品頁面（未開放）',
-        shop_desc: '同人誌畫集與周邊通販系統正在籌備中，敬請期待後續開放通知！'
+        shop_filter_all: '全部最新商品'
       },
       'zh-Hans': {
         nav_profile: '个人资料',
         nav_works: '作品',
         nav_sponsor: '欢迎赞助',
         nav_commission: '委托我',
-        nav_shop: '商品',
+        nav_shop: '最新商品',
         click_sound_hint: '点击头像播放音效 (满20次掉金币)',
         about_title: 'About me',
         about_p1: '你好，我是 <strong class="font-black text-ef-navy">KmOS</strong>！<br>专注于二次元角色插画、原创与二创同人绘制。',
         about_p2: '平时会在 <strong>Pixiv</strong> 与 <strong>X (Twitter)</strong> 分享最新插画作品；高画质原图、未公开草稿进度与限定差分则会定期更新于 <strong>FANBOX / Patreon / Fansky</strong>，欢迎加入 <strong>KmOS 奇妙小屋</strong> 一起交流！',
-        cat_ba: 'Blue Archive // 作品列表',
+        cat_live: '最新发布 // Pixiv 同步',
+        cat_ba: 'Blue Archive',
         cat_zzz: '绝区零',
         cat_wuwa: '鸣潮',
         top_limit: '已经到顶了',
         bottom_limit: '已经到底了',
-        works_click_tip: '点击任意作品卡片即可直接前往该作品的 Pixiv 页面',
         tier_s_title: '小杯',
         tier_s_desc: '这个计划可以看到我公开的草稿进度(Fanbox专属)',
         tier_l_title: '超大杯',
@@ -843,25 +924,24 @@
         comm_sec4_title: '■ 使用条款（商用 / 修改 / 版权）',
         comm_sec4_list: '<li><strong>使用权限</strong>：默认为个人非商用收藏；如需商用请事先告知并另计授权费。</li><li><strong>修改次数</strong>：草图阶段可免费微调 2 次；完稿阶段仅接受小幅色彩微调。</li><li><strong>版权归属</strong>：著作权归画师 KmOS 所有，默认会打上水印公开展示于作品集。</li>',
         comm_form_btn: '填写 Google 委托申请表单',
-        shop_title: '商品页面（未开放）',
-        shop_desc: '同人志画集与周边通贩系统正在筹备中，敬请期待后续开放通知！'
+        shop_filter_all: '全部最新商品'
       },
       'en': {
         nav_profile: 'Profile',
         nav_works: 'Artworks',
         nav_sponsor: 'Support',
         nav_commission: 'Commission',
-        nav_shop: 'Shop',
+        nav_shop: 'Latest Shop',
         click_sound_hint: 'Click for 10 SFX! (20 clicks = Coin)',
         about_title: 'About me',
         about_p1: 'Hi, I am <strong class="font-black text-ef-navy">KmOS</strong>!<br>Digital illustrator specializing in anime character art & doujin works.',
         about_p2: 'I share my latest illustrations on <strong>Pixiv</strong> & <strong>X (Twitter)</strong>. High-res files, WIP sketches, and exclusive variations are regularly posted on <strong>FANBOX / Patreon / Fansky</strong>. Welcome to join our Discord!',
-        cat_ba: 'Blue Archive // Gallery',
+        cat_live: 'Latest // Pixiv Sync',
+        cat_ba: 'Blue Archive',
         cat_zzz: 'Zenless Zone Zero',
         cat_wuwa: 'Wuthering Waves',
         top_limit: 'Newest reached',
         bottom_limit: 'End of list',
-        works_click_tip: 'Click any artwork card to view the full post on Pixiv',
         tier_s_title: 'Small Cup',
         tier_s_desc: 'Access to my public WIP sketches and draft progress (Fanbox Exclusive).',
         tier_l_title: 'Extra Large Cup',
@@ -871,31 +951,30 @@
         comm_sec1_title: '■ Status & Types',
         comm_sec1_desc: 'Commissions are <strong>OPEN</strong>. Accepting: Anime character illustrations, fanart, original character standing art, and variations (SFW / NSFW).',
         comm_sec2_title: '■ Pricing & Quotes',
-        comm_sec2_desc: 'Quoted individually based on composition, outfit complexity, background, and variations (Bust / Half-body / Full-body). Submit the Google Form below for an exact quote.',
+        comm_sec2_desc: 'Quoted individually based on composition, outfit complexity, background, and variations. Submit the Google Form below for an exact quote.',
         comm_sec3_title: '■ Workflow',
         comm_sec3_steps: '<span class="bg-gray-200 px-2 py-0.5 rounded">1.Inquiry</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">2.Deposit</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">3.Sketch</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">4.Final</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">5.Edits</span> ➔ <span class="bg-emerald-200 text-emerald-950 px-2 py-0.5 rounded">6.Delivery</span>',
         comm_sec4_title: '■ Terms of Service',
-        comm_sec4_list: '<li><strong>Usage</strong>: Personal non-commercial use by default. Commercial use requires an additional license fee.</li><li><strong>Revisions</strong>: Up to 2 free minor revisions during the sketch stage; minor color tweaks only upon completion.</li><li><strong>Copyright</strong>: Retain by KmOS. Watermarked versions may be shared in my portfolio unless NDA is requested.</li>',
+        comm_sec4_list: '<li><strong>Usage</strong>: Personal non-commercial use by default. Commercial use requires an additional license fee.</li><li><strong>Revisions</strong>: Up to 2 free minor revisions during sketch stage.</li><li><strong>Copyright</strong>: Retained by KmOS. Watermarked versions may be shared in portfolio.</li>',
         comm_form_btn: 'Open Google Commission Form',
-        shop_title: 'Merch Shop (Coming Soon)',
-        shop_desc: 'Doujinshi artbooks and merchandise store is currently under construction. Stay tuned!'
+        shop_filter_all: 'All Releases'
       },
       'ja': {
         nav_profile: 'プロフィール',
         nav_works: '作品一覧',
         nav_sponsor: 'ご支援',
         nav_commission: 'ご依頼',
-        nav_shop: 'ショップ',
+        nav_shop: '最新グッズ・投稿',
         click_sound_hint: 'クリックで10種の効果音！(20回でコイン音)',
         about_title: 'About me',
         about_p1: 'こんにちは、<strong class="font-black text-ef-navy">KmOS</strong> です！<br>二次元キャラクターイラスト・同人作品を制作しています。',
         about_p2: '<strong>Pixiv</strong> や <strong>X (Twitter)</strong> で最新イラストを公開中。高画質原寸データ・ラフ進捗・限定差分は <strong>FANBOX / Patreon / Fansky</strong> にて定期更新しています！',
-        cat_ba: 'ブルーアーカイブ // 作品一覧',
-        cat_zzz: 'ゼンレスゾーンゼロ',
-        cat_wuwa: '鳴潮 (メイチョウ)',
+        cat_live: '最新投稿 // Pixiv 同期',
+        cat_ba: 'ブルアカ',
+        cat_zzz: 'ゼンゼロ',
+        cat_wuwa: '鳴潮',
         top_limit: 'これ以上戻れません',
         bottom_limit: '最後のページです',
-        works_click_tip: '作品カードをクリックすると Pixiv の詳細ページへ移動します',
         tier_s_title: 'Sサイズ杯',
         tier_s_desc: '公開ラフや制作進捗を閲覧できるプランです（Fanbox限定）',
         tier_l_title: 'Lサイズ杯',
@@ -903,28 +982,26 @@
         comm_title: 'ご依頼について',
         comm_status_badge: '受付状況：受付中 (OPEN)',
         comm_sec1_title: '■ 受付状況・対応ジャンル',
-        comm_sec1_desc: '現在<strong>ご依頼受付中</strong>です。キャラクターイラスト、二次創作、立ち絵、衣装デザイン、差分制作（全年齢 / R18）に対応しております。',
+        comm_sec1_desc: '現在<strong>ご依頼受付中</strong>です。キャラクターイラスト、二次創作、立ち絵、差分制作（全年齢 / R18）に対応しております。',
         comm_sec2_title: '■ 料金目安・お見積り',
-        comm_sec2_desc: '構図や衣装の難易度、背景の有無、差分枚数により個別にお見積りいたします。下記の Google フォームよりお気軽にお問い合わせください。',
+        comm_sec2_desc: '構図や衣装の難易度、差分枚数により個別にお見積りいたします。下記の Google フォームよりお気軽にお問い合わせください。',
         comm_sec3_title: '■ 制作の流れ',
         comm_sec3_steps: '<span class="bg-gray-200 px-2 py-0.5 rounded">1.見積</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">2.着手金</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">3.ラフ</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">4.清書</span> ➔ <span class="bg-gray-200 px-2 py-0.5 rounded">5.調整</span> ➔ <span class="bg-emerald-200 text-emerald-950 px-2 py-0.5 rounded">6.納品</span>',
         comm_sec4_title: '■ 利用規約（商用・修正・著作権）',
-        comm_sec4_list: '<li><strong>利用範囲</strong>：基本料金は個人観賞用（非商用）です。商用利用の場合は別途ロイヤリティが発生します。</li><li><strong>修正回数</strong>：ラフ段階で2回まで無料調整可能。完成後は色味の微調整のみ対応いたします。</li><li><strong>著作権</strong>：著作権は KmOS に帰属します。実績として透かし入りで公開する場合があります。</li>',
+        comm_sec4_list: '<li><strong>利用範囲</strong>：基本料金は個人観賞用です。商用利用は別途ご相談ください。</li><li><strong>修正回数</strong>：ラフ段階で2回まで無料調整可能。</li><li><strong>著作権</strong>：著作権は KmOS に帰属します。</li>',
         comm_form_btn: 'Google ご依頼フォームへ移動',
-        shop_title: 'グッズショップ（準備中）',
-        shop_desc: '同人誌・グッズ通販ページは現在準備中です。公開まで今しばらくお待ちください！'
+        shop_filter_all: 'すべて表示'
       }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 套用 Google 問卷連結
       const googleFormBtn = document.getElementById('googleFormBtn');
       if (googleFormBtn && CONFIG.googleFormUrl) {
         googleFormBtn.href = CONFIG.googleFormUrl;
       }
 
       // =======================================================
-      // 1. Web Audio API 合成音效引擎 (含 10 種隨機電子音效 + 20次金幣音)
+      // 1. Web Audio API 合成音效引擎 (10種隨機電子音 + 20次金幣音)
       // =======================================================
       let audioCtx = null;
       function getAudioContext() {
@@ -940,7 +1017,6 @@
 
       window.addEventListener('pointerdown', () => getAudioContext(), { once: true });
 
-      // 加載畫面跳動音效
       function playElectronicBounceSound(progressVal = 50) {
         try {
           const ctx = getAudioContext();
@@ -961,14 +1037,11 @@
         } catch (e) {}
       }
 
-      // 經典電子金幣音效 (B5 -> E6 清脆雙音階，每滿 20 次觸發)
       function playCoinSound() {
         try {
           const ctx = getAudioContext();
           if (!ctx) return;
           const now = ctx.currentTime;
-
-          // 第一音 B5 (987.77 Hz)
           const osc1 = ctx.createOscillator();
           const gain1 = ctx.createGain();
           osc1.type = 'square';
@@ -980,7 +1053,6 @@
           osc1.start(now);
           osc1.stop(now + 0.09);
 
-          // 第二音 E6 (1318.51 Hz) 長尾韻
           const osc2 = ctx.createOscillator();
           const gain2 = ctx.createGain();
           osc2.type = 'square';
@@ -994,7 +1066,6 @@
         } catch (e) {}
       }
 
-      // 10 種隨機電子音效庫
       function playRandom10ElectronicSound() {
         try {
           const ctx = getAudioContext();
@@ -1019,41 +1090,41 @@
           };
 
           switch (variant) {
-            case 0: // 1. 經典雙音科幻 Pop
+            case 0:
               makeTone('sine', 520, 960, 0.14, 0, 0.24);
               makeTone('triangle', 1180, 1560, 0.16, 0.07, 0.18);
               break;
-            case 1: // 2. 電玩 8-Bit 跳躍音
+            case 1:
               makeTone('square', 180, 680, 0.18, 0, 0.14);
               break;
-            case 3: // 3. 科幻雷射 Pew
+            case 2:
               makeTone('sawtooth', 1200, 160, 0.2, 0, 0.15);
               break;
-            case 4: // 4. 水晶高音泛音鈴
+            case 3:
               makeTone('sine', 1046.5, 2093, 0.25, 0, 0.2);
               makeTone('sine', 1567.98, 3135.96, 0.25, 0.04, 0.12);
               break;
-            case 5: // 5. 電玩三連音啪嗒 (C5-E5-G5)
+            case 4:
               makeTone('square', 523.25, 523.25, 0.06, 0, 0.12);
               makeTone('square', 659.25, 659.25, 0.06, 0.06, 0.12);
               makeTone('square', 783.99, 783.99, 0.1, 0.12, 0.14);
               break;
-            case 6: // 6. 機械終端雙嗶聲
+            case 5:
               makeTone('sine', 1480, 1480, 0.05, 0, 0.18);
               makeTone('sine', 1860, 1860, 0.07, 0.07, 0.18);
               break;
-            case 7: // 7. 能量充能上揚音
+            case 6:
               makeTone('triangle', 240, 1120, 0.22, 0, 0.22);
               break;
-            case 8: // 8. 可愛氣泡彈跳音
+            case 7:
               makeTone('sine', 360, 880, 0.09, 0, 0.25);
               makeTone('sine', 720, 1440, 0.1, 0.08, 0.2);
               break;
-            case 9: // 9. 重低音 Synth Bounce
+            case 8:
               makeTone('sawtooth', 110, 330, 0.12, 0, 0.18);
               makeTone('triangle', 440, 220, 0.12, 0.06, 0.16);
               break;
-            default: // 10. 星際通訊滑音
+            default:
               makeTone('sine', 880, 440, 0.08, 0, 0.2);
               makeTone('sine', 440, 1320, 0.14, 0.08, 0.2);
               break;
@@ -1061,7 +1132,6 @@
         } catch (e) {}
       }
 
-      // 終末地 UI 機械確認點擊音效
       function playUiTick(freq = 680) {
         try {
           const ctx = getAudioContext();
@@ -1120,16 +1190,14 @@
       }, 32);
 
       // =======================================================
-      // 3. 多國語言切換邏輯
+      // 3. 多國語言切換
       // =======================================================
       const langBtns = document.querySelectorAll('[data-lang]');
       function applyLanguage(langCode) {
         const dict = I18N[langCode] || I18N['zh-Hant'];
         document.querySelectorAll('[data-i18n]').forEach(el => {
           const key = el.getAttribute('data-i18n');
-          if (dict[key]) {
-            el.innerHTML = dict[key];
-          }
+          if (dict[key]) el.innerHTML = dict[key];
         });
         langBtns.forEach(btn => {
           btn.classList.toggle('active', btn.getAttribute('data-lang') === langCode);
@@ -1144,15 +1212,13 @@
       });
 
       // =======================================================
-      // 4. 頭像互動（10種隨機電子音 + 每滿 20 次播放電子金幣音效）
+      // 4. 頭像互動（10種隨機電子音 + 滿 20 次電子金幣音）
       // =======================================================
       let avatarClickCount = 0;
       const sfxCounterBadge = document.getElementById('sfxCounterBadge');
 
-      const topRefreshBtn = document.getElementById('topRefreshBtn');
-      topRefreshBtn.addEventListener('click', () => {
+      document.getElementById('topRefreshBtn').addEventListener('click', () => {
         playCoinSound();
-        topRefreshBtn.style.transform = 'scale(0.92)';
         setTimeout(() => window.location.reload(), 180);
       });
 
@@ -1171,7 +1237,6 @@
           }
 
           if (isCoinMilestone) {
-            // 滿 20 次：播放電子金幣音效 + 金色光環彈跳
             playCoinSound();
             btn.classList.remove('avatar-bounce', 'coin-jackpot-anim');
             void btn.offsetWidth;
@@ -1182,7 +1247,6 @@
             btn.appendChild(goldRing);
             setTimeout(() => goldRing.remove(), 650);
           } else {
-            // 平時：隨機播放 10 種電子音效之一
             playRandom10ElectronicSound();
             btn.classList.remove('avatar-bounce', 'coin-jackpot-anim');
             void btn.offsetWidth;
@@ -1199,7 +1263,7 @@
       bindAvatarPop('commAvatarBtn');
 
       // =======================================================
-      // 5. 左側導航選單切換 (個人資料 / 作品 / 歡迎贊助 / 委託我 / 商品)
+      // 5. 左側導航選單切換
       // =======================================================
       const navButtons = document.querySelectorAll('[data-tab]');
       const hudSectionCode = document.getElementById('hudSectionCode');
@@ -1214,19 +1278,17 @@
 
       const hudLabels = {
         profile: 'SEC_01 // ABOUT_ME',
-        works: 'SEC_02 // PIXIV_ARCHIVE',
+        works: 'SEC_02 // PIXIV_LIVE_SYNC',
         sponsor: 'SEC_03 // SPONSORSHIP_TIERS',
         commission: 'SEC_04 // COMMISSION_FORM',
-        shop: 'SEC_05 // MERCH_STORE_LOCKED'
+        shop: 'SEC_05 // FANBOX_PATREON_FANSKY_SYNC'
       };
 
       function switchTab(tabKey) {
         playUiTick(740);
-
         navButtons.forEach(btn => {
           btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
         });
-
         hudSectionCode.textContent = hudLabels[tabKey] || 'SEC_00';
 
         Object.keys(sections).forEach(k => {
@@ -1244,6 +1306,8 @@
           renderWorksCarousel(true);
         } else if (tabKey === 'sponsor') {
           showSponsorMain();
+        } else if (tabKey === 'shop') {
+          renderShopCards(currentShopFilter);
         }
       }
 
@@ -1252,10 +1316,10 @@
       });
 
       // =======================================================
-      // 6. 作品列表分類切換 (Blue Archive / 絕區零 / 鳴潮 / R18)
+      // 6. Pixiv 實時同步引擎 (自動抓取 UID 58370556 最新 10 張作品 + 破解防盜鏈)
       // =======================================================
-      let currentCategory = 'ba';
-      let artworksList = [...CONFIG.blueArchiveArtworks];
+      let currentCategory = 'live';
+      let artworksList = [...CONFIG.pixivLiveArtworks];
       let currentStartIndex = 0;
 
       const worksViewport = document.getElementById('worksViewport');
@@ -1265,6 +1329,17 @@
       const bottomLimitHint = document.getElementById('bottomLimitHint');
       const carouselCounter = document.getElementById('carouselCounter');
       const catButtons = document.querySelectorAll('[data-work-cat]');
+      const pixivSyncStatusText = document.getElementById('pixivSyncStatusText');
+
+      // 根據 Pixiv 作品 ID 自動產生免防盜鏈的官方外嵌圖網址
+      function getPixivAutoImage(item) {
+        if (item.remoteThumb) return item.remoteThumb;
+        if (item.img) return item.img;
+        if (/^\d+$/.test(String(item.id))) {
+          return `https://embed.pixiv.net/decorate.php?illust_id=${item.id}`;
+        }
+        return `https://placehold.co/600x840/061547/ffffff?text=${encodeURIComponent(item.title)}`;
+      }
 
       function switchWorkCategory(catKey) {
         playUiTick(880);
@@ -1275,7 +1350,10 @@
           btn.classList.toggle('active', btn.getAttribute('data-work-cat') === catKey);
         });
 
-        if (catKey === 'ba') {
+        if (catKey === 'live') {
+          artworksList = [...CONFIG.pixivLiveArtworks];
+          document.body.classList.remove('r18-mode');
+        } else if (catKey === 'ba') {
           artworksList = [...CONFIG.blueArchiveArtworks];
           document.body.classList.remove('r18-mode');
         } else if (catKey === 'zzz') {
@@ -1305,6 +1383,11 @@
         visibleItems.forEach((item, idx) => {
           const globalIndex = currentStartIndex + idx;
           const isNewestFirstWork = (globalIndex === 0);
+          const primarySrc = getPixivAutoImage(item);
+          const isNumericPixivId = /^\d+$/.test(String(item.id));
+          const mirrorFallback = isNumericPixivId
+            ? `https://embed.pixiv.net/decorate.php?illust_id=${item.id}`
+            : `https://placehold.co/600x840/${currentCategory === 'r18' ? 'ec4899' : '061547'}/ffffff?text=${encodeURIComponent(item.title)}`;
 
           const card = document.createElement('a');
           card.href = item.url || `https://www.pixiv.net/artworks/${item.id}`;
@@ -1315,15 +1398,14 @@
             card.style.animationDelay = `${idx * 65}ms`;
           }
 
-          const placeholderUrl = `https://placehold.co/600x840/${currentCategory === 'r18' ? 'ec4899' : '061547'}/ffffff?text=${encodeURIComponent(item.title)}`;
-
           card.innerHTML = `
             <div class="w-full h-full overflow-hidden relative bg-gray-200 border border-white">
-              <img src="${item.img}" 
+              <img src="${primarySrc}" 
                    alt="${item.title}"
-                   onerror="this.onerror=null; this.src='${placeholderUrl}';"
+                    referrerpolicy="no-referrer"
+                   onerror="if(!this.dataset.fb1){this.dataset.fb1='1';this.src='${mirrorFallback}';}else{this.onerror=null;this.src='https://placehold.co/600x840/061547/ffffff?text=Pixiv+%23${item.id}';}"
                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between">
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between">
                 <span class="text-[11px] font-bold text-white truncate">${item.title}</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white"></i>
               </div>
@@ -1376,10 +1458,184 @@
         }
       });
 
+      // 自動向 Pixiv (UID: 58370556) 抓取最新發佈的 10 張作品
+      async function autoSyncPixivLatest() {
+        const targetProfileAll = `https://www.pixiv.net/ajax/user/${CONFIG.pixivUserId}/profile/all?lang=zh_tw`;
+        const proxies = [
+          `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetProfileAll)}`,
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(targetProfileAll)}`,
+          `https://corsproxy.io/?${encodeURIComponent(targetProfileAll)}`
+        ];
+
+        for (const proxyUrl of proxies) {
+          try {
+            const res = await fetch(proxyUrl);
+            if (!res.ok) continue;
+            const json = await res.json();
+            if (json && !json.error && json.body && json.body.illusts) {
+              let illustIds = Object.keys(json.body.illusts).sort((a, b) => Number(b) - Number(a));
+              if (!illustIds.includes(CONFIG.latestPinnedPixivId)) {
+                illustIds.unshift(CONFIG.latestPinnedPixivId);
+              }
+              const top10Ids = illustIds.slice(0, 10);
+
+              // 嘗試取得作品標題與 i.pximg.net 縮圖並轉為 i.pixiv.re 鏡像
+              let worksMeta = {};
+              try {
+                const queryIds = top10Ids.map(id => `ids%5B%5D=${id}`).join('&');
+                const detailApi = `https://www.pixiv.net/ajax/user/${CONFIG.pixivUserId}/profile/illusts?${queryIds}&work_category=illustManga&is_first_page=1&lang=zh_tw`;
+                const detailProxy = proxyUrl.includes('codetabs')
+                  ? `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(detailApi)}`
+                  : `https://api.allorigins.win/raw?url=${encodeURIComponent(detailApi)}`;
+                const dRes = await fetch(detailProxy);
+                const dJson = await dRes.json();
+                if (dJson && dJson.body && dJson.body.works) {
+                  worksMeta = dJson.body.works;
+                }
+              } catch (e) {}
+
+              const syncedList = top10Ids.map(id => {
+                const w = worksMeta[id];
+                const localMatch = CONFIG.pixivLiveArtworks.find(item => String(item.id) === String(id));
+                const remoteThumb = (w && w.url)
+                  ? w.url.replace('i.pximg.net', 'i.pixiv.re')
+                  : `https://embed.pixiv.net/decorate.php?illust_id=${id}`;
+
+                return {
+                  id: String(id),
+                  title: (w && w.title) ? w.title : (localMatch ? localMatch.title : `Pixiv Artwork #${id}`),
+                  img: localMatch && localMatch.img ? localMatch.img : remoteThumb,
+                  remoteThumb: remoteThumb,
+                  url: `https://www.pixiv.net/artworks/${id}`
+                };
+              });
+
+              CONFIG.pixivLiveArtworks = syncedList;
+              if (currentCategory === 'live') {
+                artworksList = [...CONFIG.pixivLiveArtworks];
+                renderWorksCarousel(false);
+              }
+
+              const newestId = top10Ids[0];
+              if (pixivSyncStatusText) {
+                pixivSyncStatusText.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>已實時同步 Pixiv 最新 10 件作品（最新：#${newestId}）`;
+              }
+              const sidebarSyncLabel = document.getElementById('sidebarSyncLabel');
+              if (sidebarSyncLabel) {
+                sidebarSyncLabel.textContent = `PIXIV SYNCED: #${newestId}`;
+              }
+              return;
+            }
+          } catch (err) {}
+        }
+      }
+
       renderWorksCarousel(false);
+      autoSyncPixivLatest();
 
       // =======================================================
-      // 7. 歡迎贊助子頁面切換
+      // 7. 第五部分：FANBOX / Patreon / Fansky 最新商品與貼文同步引擎
+      // =======================================================
+      let currentShopFilter = 'all';
+      const shopCardsViewport = document.getElementById('shopCardsViewport');
+      const shopFilterBtns = document.querySelectorAll('[data-shop-filter]');
+      const shopSyncBadge = document.getElementById('shopSyncBadge');
+
+      function renderShopCards(filterKey = 'all') {
+        if (!shopCardsViewport) return;
+        shopCardsViewport.innerHTML = '';
+
+        const filtered = filterKey === 'all'
+          ? CONFIG.shopProducts
+          : CONFIG.shopProducts.filter(item => item.platform === filterKey);
+
+        filtered.slice(0, 3).forEach((item, idx) => {
+          const card = document.createElement('a');
+          card.href = item.url;
+          card.target = '_blank';
+          card.rel = 'noopener noreferrer';
+          card.className = 'group bg-white/90 hover:bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl border border-black/10 flex flex-col justify-between transition-all duration-200 hover:-translate-y-1.5 fly-in-right';
+          card.style.animationDelay = `${idx * 70}ms`;
+
+          card.innerHTML = `
+            <div>
+              <div class="w-full aspect-[16/10] bg-gray-900 relative overflow-hidden">
+                <img src="${item.img}" 
+                     alt="${item.title}"
+                     referrerpolicy="no-referrer"
+                     onerror="this.onerror=null; this.src='${item.fallbackImg || 'plan_l.png'}';"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-2 left-2 text-[10px] font-mono font-black px-2 py-0.5 rounded shadow ${item.badgeColor}">
+                  ${item.badge}
+                </span>
+              </div>
+              <div class="p-3.5 text-left">
+                <h3 class="text-xs sm:text-sm font-black text-gray-900 line-clamp-2 mb-1 group-hover:text-ef-navy">
+                  ${item.title}
+                </h3>
+                <p class="text-[11px] text-gray-600 line-clamp-2 leading-relaxed">
+                  ${item.desc}
+                </p>
+              </div>
+            </div>
+            <div class="px-3.5 pb-3 pt-1 flex items-center justify-between border-t border-gray-100">
+              <span class="text-[11px] font-mono font-extrabold text-ef-navy">${item.price}</span>
+              <span class="text-[11px] font-bold text-black group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                <span>前往查看</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </span>
+            </div>
+          `;
+          shopCardsViewport.appendChild(card);
+        });
+      }
+
+      shopFilterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playUiTick(820);
+          currentShopFilter = btn.getAttribute('data-shop-filter');
+          shopFilterBtns.forEach(b => b.classList.toggle('active', b === btn));
+          renderShopCards(currentShopFilter);
+        });
+      });
+
+      // 自動嘗試從 FANBOX API 抓取最新貼文並同步至商品區
+      async function autoSyncFanboxPosts() {
+        const fanboxApi = `https://api.fanbox.cc/post.listCreator?creatorId=${CONFIG.fanboxCreatorId}&limit=3`;
+        const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fanboxApi)}`;
+        try {
+          const res = await fetch(proxyUrl);
+          if (res.ok) {
+            const data = await res.json();
+            const items = data && data.body && (data.body.items || data.body);
+            if (Array.isArray(items) && items.length > 0) {
+              const newestPost = items[0];
+              CONFIG.shopProducts[0] = {
+                platform: 'fanbox',
+                badge: 'FANBOX // LIVE SYNC',
+                badgeColor: 'bg-[#fff394] text-black',
+                title: newestPost.title || CONFIG.shopProducts[0].title,
+                desc: newestPost.excerpt || '點擊前往 FANBOX 查看最新公開草稿與高畫質差分內容！',
+                price: newestPost.feeRequired ? `¥${newestPost.feeRequired} / 月` : 'FREE / 公開貼文',
+                img: newestPost.coverImageUrl || CONFIG.shopProducts[0].img,
+                fallbackImg: 'plan_l.png',
+                url: `https://kmos.fanbox.cc/posts/${newestPost.id}`
+              };
+            }
+          }
+        } catch (e) {}
+
+        if (shopSyncBadge) {
+          shopSyncBadge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>FANBOX・PATREON・FANSKY READY`;
+        }
+        renderShopCards(currentShopFilter);
+      }
+
+      renderShopCards('all');
+      autoSyncFanboxPosts();
+
+      // =======================================================
+      // 8. 歡迎贊助子頁面切換
       // =======================================================
       const sponsorTierList = document.getElementById('sponsorTierList');
       const sponsorSmallSubpage = document.getElementById('sponsorSmallSubpage');
